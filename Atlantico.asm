@@ -105,6 +105,22 @@ Loop:
 .endproc
 
 .proc DrawNewColumn
+CalculateDestColAddrLoByte:
+  lda XScroll               ; divide current XScroll value by 8
+  lsr
+  lsr
+  lsr
+  sta DestColAddr           ; set the lo byte of the destination column address
+
+CalculateDestColAddrHiByte:
+  lda CurrNameTable         ; get current NameTable value (0 or 1) and multiply by 4
+  eor #1
+  asl
+  asl
+  clc
+  adc #$20                  ; add $20 (resulting in $20 or $24) for NameTable 0 or 1
+  sta DestColAddr+1         ; set the hi byte of the destination column address ($20XX or $24XX)
+
   rts
 .endproc
 
