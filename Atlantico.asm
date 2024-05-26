@@ -27,6 +27,7 @@ Clock60:              .res 1  ; # of elapsed seconds
 BgPtr:                .res 2  ; pointer to the background address
 XScroll:              .res 1  ; horizontal scroll position
 CurrNameTable:        .res 1  ; store the current 'starting' NameTable (0 or 1)
+SourceColIndex:       .res 1  ; index of source column
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
@@ -111,6 +112,7 @@ InitVariables:
   sta Clock60
   sta XScroll                 ; initialize horizontal scroll position to 0
   sta CurrNameTable           ; initialize the 'starting' NameTable
+  sta SourceColIndex          ; initialize the source column index to 0
 
 Main:
   jsr LoadPalette             ; set palette data
