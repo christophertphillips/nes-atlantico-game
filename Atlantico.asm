@@ -114,8 +114,6 @@ InitVariables:
 
 Main:
   jsr LoadPalette             ; set palette data
-  jsr LoadNameTable0          ; set NameTable0 data
-  jsr LoadNameTable1          ; set NameTable1 data
   jsr LoadSprites             ; set sprites (from tiles)
 
 EnableRendering:
