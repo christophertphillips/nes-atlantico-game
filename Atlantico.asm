@@ -104,6 +104,10 @@ Loop:
   rts                       ; else, return from subroutine
 .endproc
 
+.proc DrawNewColumn
+  rts
+.endproc
+
 Reset:
   INIT_NES
 
@@ -146,6 +150,8 @@ NewColumnCheck:
   lda #$07                    ; has the screen scrolled by 8 pixels/units?
   bit XScroll
   bne :+                      ; if no, skip
+      jsr DrawNewColumn       ; draw a new column
+
       lda SourceColIndex      ; else, increment source column index
       clc
       adc #1
