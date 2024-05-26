@@ -109,8 +109,8 @@ InitVariables:
   lda #0                      ; set frame, clock counters to 0
   sta Frame
   sta Clock60
-  ; sta XScroll                 ; initialize horizontal scroll position to 0
-  ; sta CurrNameTable           ; initialize the 'starting' NameTable
+  sta XScroll                 ; initialize horizontal scroll position to 0
+  sta CurrNameTable           ; initialize the 'starting' NameTable
 
 Main:
   jsr LoadPalette             ; set palette data
@@ -139,20 +139,20 @@ OAMStartDMACopy:
   lda #$02                    ; indicate that sprite data to be copied is at $02**
   sta PPU_OAM_DMA             ; initiate DMA copy (indicating address above)
 
-; ScrollBackground:
-;   inc XScroll                 ; increment horizontal scroll position
-;   lda XScroll
-;   bne :+                      ; has the edge of the screen been reached?
-;       lda CurrNameTable       ; if yes, swap current 'starting' NameTable index in RAM
-;       eor #$01
-;       sta CurrNameTable
-;       lda #%10010000          ; enable NMI interrupts from PPU and set background to use 2nd pattern table
-;       ora CurrNameTable       ; set 'starting' NameTable
-;       sta PPU_CTRL
-;       lda XScroll             ; load XScroll (=0) again
-; : sta PPU_SCROLL              ; set PPU_SCROLL's X value to XScroll value
-;   lda #$00                    ; set PPU_SCROLL's Y value to 0
-;   sta PPU_SCROLL
+ScrollBackground:
+  inc XScroll                 ; increment horizontal scroll position
+  lda XScroll
+  bne :+                      ; has the edge of the screen been reached?
+      lda CurrNameTable       ; if yes, swap current 'starting' NameTable index in RAM
+      eor #$01
+      sta CurrNameTable
+      lda #%10010000          ; enable NMI interrupts from PPU and set background to use 2nd pattern table
+      ora CurrNameTable       ; set 'starting' NameTable
+      sta PPU_CTRL
+      lda XScroll             ; load XScroll (=0) again
+: sta PPU_SCROLL              ; set PPU_SCROLL's X value to XScroll value
+  lda #$00                    ; set PPU_SCROLL's Y value to 0
+  sta PPU_SCROLL
 
 SetGameClock:
   lda Frame                   ; check if 60 frames have been counted
