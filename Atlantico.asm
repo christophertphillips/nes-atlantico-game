@@ -28,6 +28,7 @@ BgPtr:                .res 2  ; pointer to the background address
 XScroll:              .res 1  ; horizontal scroll position
 CurrNameTable:        .res 1  ; store the current 'starting' NameTable (0 or 1)
 SourceColIndex:       .res 1  ; index of source column
+DestColAddr:          .res 2  ; address of destination column in PPU memory map
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
