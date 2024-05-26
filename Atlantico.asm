@@ -187,11 +187,11 @@ NameTable1Data:
 .incbin "nametable1.nam"
 
 SpriteData:
-;       Y   tile#   attribs      X
-.byte  $80,   $18,  %00000000,  $10  ; OAM sprite 1
-.byte  $80,   $1A,  %00000000,  $18  ; OAM sprite 2
-.byte  $88,   $19,  %00000000,  $10  ; OAM sprite 3
-.byte  $88,   $1B,  %00000000,  $18  ; OAM sprite 4
+;      Y   tile#  attributes   X
+.byte $A6,  $60,  %00000000,  $70 ; $200   _______________
+.byte $A6,  $61,  %00000000,  $78 ; $204   \  o o o o o  /   <-- Ship (4 tiles)
+.byte $A6,  $62,  %00000000,  $80 ; $208    \___________/
+.byte $A6,  $63,  %00000000,  $88 ; $20C
 
 .segment "CHARS"
 .incbin "atlantico.chr"
