@@ -141,6 +141,17 @@ OAMStartDMACopy:
   lda #$02                    ; indicate that sprite data to be copied is at $02**
   sta PPU_OAM_DMA             ; initiate DMA copy (indicating address above)
 
+NewColumnCheck:
+  lda #$07                    ; has the screen scrolled by 8 pixels/units?
+  bit XScroll
+  bne :+                      ; if no, skip
+      lda SourceColIndex      ; else, increment source column index
+      clc
+      adc #1
+      and #$7F                ; ensure source column index <= 128
+      sta SourceColIndex      ; store source column index
+:
+
 ScrollBackground:
   inc XScroll                 ; increment horizontal scroll position
   lda XScroll
