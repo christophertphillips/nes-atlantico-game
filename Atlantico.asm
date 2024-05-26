@@ -194,7 +194,7 @@ SpriteData:
 .byte  $88,   $1B,  %00000000,  $18  ; OAM sprite 4
 
 .segment "CHARS"
-.incbin "battle.chr"
+.incbin "atlantico.chr"
 
 ;--------------------------------------------------------
 ; vectors w/ addresses of handlers
