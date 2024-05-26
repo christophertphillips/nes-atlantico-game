@@ -3,49 +3,6 @@
 .include "IncFiles/reset.inc"
 .include "IncFiles/utils.inc"
 
-;--------------------------------------------------------
-; ROM-specific macros
-;--------------------------------------------------------
-
-.macro PERFORM_POSITIVE_ACCEL
-  lda XVel                              ; load current XVel
-  clc                                   ; add ACCEL to XVel
-  adc #ACCEL
-  cmp #MAXSPEED                         ; is new XVel > MAXSPEED?
-  bcc :+                                ; if no, continue with new XVel
-      lda #MAXSPEED                     ; else, new XVel = MAXSPEED
-: sta XVel                              ; store new XVel
-.endmacro
-
-.macro PERFORM_NEGATIVE_ACCEL
-  lda XVel                              ; load current XVel
-  sec                                   ; subtract ACCEL from XVel
-  sbc #ACCEL
-  cmp #256-MAXSPEED                     ; is new XVel < MAXSPEED?
-  bcs :+                                ; if no, continue with new XVel
-      lda #256-MAXSPEED                 ; else, new XVel = MAXSPEED
-  : sta XVel                            ; store new XVel
-.endmacro
-
-.macro PERFORM_POSITIVE_DECEL
-  lda XVel                              ; load current XVel
-  sec                                   ; subtract BRAKE from XVel
-  sbc #BRAKE
-  ; cmp #0                              ; is new XVel > 0?
-  bpl :+                                ; if yes, continue with current XVel
-      lda #0                            ; else, new XVel = 0
-  : sta XVel                            ; store new XVel
-.endmacro
-
-.macro PERFORM_NEGATIVE_DECEL
-  lda XVel                      ; load current XVel
-  clc                           ; subtract BRAKE from XVel
-  adc #BRAKE
-  ; cmp #0                      ; is new XVel < 0?
-  bmi :+                        ; if yes, continue with current XVel
-      lda #0                    ; else, new XVel = 0
-  : sta XVel
-.endmacro
 
 ;--------------------------------------------------------
 ; ROM-specific constants
@@ -65,7 +22,6 @@ XPos:                 .res 2  ; player X position, (8.8 fixed-point math), (Xhi 
 YPos:                 .res 2  ; player Y position, (8.8 fixed-point math), (Yhi + Ylo/256) pixels
 XVel:                 .res 1  ; player X speed in pixels per 256 frames (pixel/256frames)
 YVel:                 .res 1  ; player Y speed in pixels per 256 frames (pixel/256frames)
-TileOffset:           .res 1  ; tile offset (0 or 4)
 Frame:                .res 1  ; # of frames
 Clock60:              .res 1  ; # of elapsed seconds
 BgPtr:                .res 2  ; pointer to the background address
@@ -153,14 +109,8 @@ InitVariables:
   lda #0                      ; set frame, clock counters to 0
   sta Frame
   sta Clock60
-  sta TileOffset              ; initialize tile offset to 0
   sta XScroll                 ; initialize horizontal scroll position to 0
   sta CurrNameTable           ; initialize the 'starting' NameTable
-
-  lda SpriteData+3            ; load default XPos of player sprite
-  sta XPos+1                  ; store hi byte of position (which represents whole pixel count)
-  lda SpriteData              ; load default YPos of player sprite
-  sta YPos+1                  ; store hi byte of position (which represents whole pixel count)
 
 Main:
   jsr LoadPalette             ; set palette data
@@ -205,101 +155,6 @@ ScrollBackground:
 : sta PPU_SCROLL              ; set PPU_SCROLL's X value to XScroll value
   lda #$00                    ; set PPU_SCROLL's Y value to 0
   sta PPU_SCROLL
-
-ReadInputs:
-  jsr ReadControllers         ; read controller inputs
-
-CheckRightLeftButtons:
-  CHECK_BUTTON #BUTTON_RIGHT            ; is right button pressed?
-  bne RightButtonPressed                ; if YES, jump to RightButtonPressed
-  CHECK_BUTTON #BUTTON_LEFT             ; is left button pressed?
-  bne LeftButtonPressed                 ; if YES, jump to LeftButtonPressed
-                                        ; else, no buttons prssed; fall throught to NoButtonsPressed
-NoButtonsPressed:
-  lda XVel                              ; is the current XVel < 0?
-  bmi ApplyNegativeDecel                ; if yes, tank is negative-velocity; jump to ApplyNegativeDecel
-  beq UpdateMetaSpritePosition          ; else if XVel = 0, tank is "idling"; jump to UpdateMetaSpritePosition
-                                        ; else, tank is positive-velocity; fall through to ApplyPositiveDecel
-
-ApplyPositiveDecel:                     ; apply positive deceleration to positive-velocity tank
-  PERFORM_POSITIVE_DECEL                ; apply positive deceleration to positive-velocity tank
-  jmp UpdateMetaSpritePosition          ; done with motion update; jump to UpdateMetaSpritePosition
-
-ApplyNegativeDecel:
-  PERFORM_NEGATIVE_DECEL                ; apply negative deceleration to negative-velocity tank
-  jmp UpdateMetaSpritePosition          ; done with motion update; jump to UpdateMetaSpritePosition
-
-RightButtonPressed:
-  lda XVel                              ; is the current XVel < 0?
-  bmi ApplyNegativeDecel                ; if YES, tank is negative-velocity; jump to ApplyNegativeDecel
-                                        ; else, v >= 0; fall through to ApplyPositiveAccel
-ApplyPositiveAccel:
-  PERFORM_POSITIVE_ACCEL                ; apply positive acceleration to stationary tank
-  jmp UpdateMetaSpritePosition          ; done with motion update; jump to UpdateMetaSpritePosition
-
-LeftButtonPressed:
-  lda XVel                              ; is the current XVel > 0?
-  beq :+
-    bpl ApplyPositiveDecel              ; if YES, tank is positive-velocity; jump to ApplyPositiveDecel
-                                        ; else, v >= 0; fall through to ApplyNegativeAccel
-ApplyNegativeAccel:
-: PERFORM_NEGATIVE_ACCEL                ; apply negative acceleration to negative-velocity tank
-  ;jmp UpdateMetaSpritePosition         ; done with motion update; jump to UpdateMetaSpritePosition
-
-UpdateMetaSpritePosition:
-  lda XVel                    ; load XVel
-  bpl :+
-    dec XPos+1                ; if velocity is negative, decrement 1 (i.e., add $FF in two's complement) from hi-byte to sign-extend
-: clc                         ; add XVel to XPos lo byte
-  adc XPos
-  sta XPos                    ; store new XPos lo byte
-  lda #0                      ; if a carry occurred when incrementing XPos lo byte, add to XPos hi byte
-  adc XPos+1
-  sta XPos+1                  ; store new XPos hi byte
-
-UpdateHardwareSprites:
-  lda XPos+1                  ; load hi byte of X position (which represents whole pixel count)
-  sta $0200+3                 ; set the first player sprite X position to be XPos
-  sta $0208+3                 ; set the third player sprite X position to be XPos
-  clc
-  adc #8
-  sta $0204+3                 ; set the second player sprite X position to be XPos+8
-  sta $020C+3                 ; set the fourth player sprite X position to be XPos+8
-
-  lda YPos+1                  ; load hi byte of Y position (which represents whole pixel count)
-  sta $0200                   ; set the first player sprite Y position to be YPos
-  sta $0204                   ; set the second player sprite Y position to be YPos
-  clc
-  adc #8
-  sta $0208                   ; set the third player sprite Y position to be YPos
-  sta $020C                   ; set the fourth player sprite Y position to be YPos
-
-  lda XPos+1                  ; load hi byte of X position (which represents whole pixel count)
-  and #$01                    ; mask all bits except least significant bit
-  asl                         ; shift least-sig bit to 2^2=4 position
-  asl
-  sta TileOffset              ; store offset value (0 or 4)
-
-ApplyHardwareSpriteOffsets:
-  lda #$18                    ; load default tile# for first sprite of metasprite
-  clc                         ; add offset (0 or 4)
-  adc TileOffset
-  sta $0201                   ; store tile#
-
-  lda #$1A                    ; load default tile# for second sprite of metasprite
-  clc                         ; add offset (0 or 4)
-  adc TileOffset
-  sta $0205                   ; store tile#
-
-  lda #$19                    ; load default tile# for third sprite of metasprite
-  clc                         ; add offset (0 or 4)
-  adc TileOffset
-  sta $0209                   ; store tile#
-
-  lda #$1B                    ; load default tile# for fourth sprite of metasprite
-  clc                         ; add offset (0 or 4)
-  adc TileOffset
-  sta $020D                   ; store tile#
 
 SetGameClock:
   lda Frame                   ; check if 60 frames have been counted
