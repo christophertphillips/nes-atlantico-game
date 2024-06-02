@@ -140,6 +140,18 @@ CalculateSourceColAddrHiByte:
   lsr
   sta SourceColAddr+1         ; set the hi byte of the source column ($00XX, $01XX, $02XX, ...)
 
+  ; add BackgroundData offset to source column address
+AddOffsetSourceColAddrLoByte:
+  lda SourceColAddr           ; add lo byte of BackgroundData offset to lo byte of SourceColAddr
+  clc
+  adc #<BackgroundData
+  sta SourceColAddr           ; set the (offsetted) lo byte of the source column address
+
+AddOffsetSourceColAddrHiByte:
+  lda SourceColAddr+1         ; add hi byte BackgroundData offset to lo byte of SourceColAddr
+  adc #>BackgroundData
+  sta SourceColAddr+1         ; set the (offsetted) hi byte of the source column address
+
   rts
 .endproc
 
