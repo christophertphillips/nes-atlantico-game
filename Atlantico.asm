@@ -124,6 +124,7 @@ CalculateDestColAddrHiByte:
   sta DestColAddr+1         ; set the hi byte of the destination column address ($20XX or $24XX)
 
   ; calculate source column address
+CalculateSourceColAddrLoByte:
   lda SourceColIndex          ; mutiply current source column index by 32
   asl
   asl
@@ -132,6 +133,7 @@ CalculateDestColAddrHiByte:
   asl
   sta SourceColAddr           ; set the lo byte of the source column address ($00, $20, $40, $60, $80, $A0, $C0, $E0)
 
+CalculateSourceColAddrHiByte:
   lda SourceColIndex          ; divide the current source column index by 8
   lsr
   lsr
