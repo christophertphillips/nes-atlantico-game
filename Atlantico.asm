@@ -239,6 +239,9 @@ NameTable0Data:
 NameTable1Data:
 .incbin "nametable1.nam"
 
+BackgroundData:
+.include "backgrounddata.inc"
+
 SpriteData:
 ;      Y   tile#  attributes   X
 .byte $A6,  $60,  %00000000,  $70 ; $200   _______________
