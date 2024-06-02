@@ -171,7 +171,7 @@ Main:
   jsr LoadSprites             ; set sprites (from tiles)
 
 EnableRendering:
-  lda #%10010000              ; enable NMI interrupts from PPU and set background to use 2nd pattern table
+  lda #%10010100              ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
   sta PPU_CTRL
   lda #$00                    ; disable scroll in X and Y
   sta PPU_SCROLL              ; X
@@ -213,7 +213,7 @@ ScrollBackground:
       lda CurrNameTable       ; if yes, swap current 'starting' NameTable index in RAM
       eor #$01
       sta CurrNameTable
-      lda #%10010000          ; enable NMI interrupts from PPU and set background to use 2nd pattern table
+      lda #%10010100          ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
       ora CurrNameTable       ; set 'starting' NameTable
       sta PPU_CTRL
       lda XScroll             ; load XScroll (=0) again
