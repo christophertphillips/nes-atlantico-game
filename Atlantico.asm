@@ -17,19 +17,19 @@ BRAKE     = 2                 ; Movement deceleration in 1/256 px/frame^2
 ;--------------------------------------------------------
 
 .segment "ZEROPAGE"
-Buttons:              .res 1  ; button state
-XPos:                 .res 2  ; player X position, (8.8 fixed-point math), (Xhi + Xlo/256) pixels
-YPos:                 .res 2  ; player Y position, (8.8 fixed-point math), (Yhi + Ylo/256) pixels
-XVel:                 .res 1  ; player X speed in pixels per 256 frames (pixel/256frames)
-YVel:                 .res 1  ; player Y speed in pixels per 256 frames (pixel/256frames)
-Frame:                .res 1  ; # of frames
-Clock60:              .res 1  ; # of elapsed seconds
-BgPtr:                .res 2  ; pointer to the background address
-XScroll:              .res 1  ; horizontal scroll position
-CurrNameTable:        .res 1  ; store the current 'starting' NameTable (0 or 1)
-SourceColIndex:       .res 1  ; index of source column
-DestColAddr:          .res 2  ; address of destination column in PPU memory map
-SourceColAddr:        .res 2  ; address of source column in ROM
+Buttons:              .res 1  ; [$00] button state
+XPos:                 .res 2  ; [$01] player X position, (8.8 fixed-point math), (Xhi + Xlo/256) pixels
+YPos:                 .res 2  ; [$03] player Y position, (8.8 fixed-point math), (Yhi + Ylo/256) pixels
+XVel:                 .res 1  ; [$05] player X speed in pixels per 256 frames (pixel/256frames)
+YVel:                 .res 1  ; [$06] player Y speed in pixels per 256 frames (pixel/256frames)
+Frame:                .res 1  ; [$07] # of frames
+Clock60:              .res 1  ; [$08] # of elapsed seconds
+BgPtr:                .res 2  ; [$09] pointer to the background address
+XScroll:              .res 1  ; [$0B] horizontal scroll position
+CurrNameTable:        .res 1  ; [$0C] store the current 'starting' NameTable (0 or 1)
+SourceColIndex:       .res 1  ; [$0D] index of source column
+DestColAddr:          .res 2  ; [$0E] address of destination column in PPU memory map
+SourceColAddr:        .res 2  ; [$10] address of source column in ROM
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
