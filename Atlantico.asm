@@ -152,6 +152,25 @@ AddOffsetSourceColAddrHiByte:
   adc #>BackgroundData
   sta SourceColAddr+1         ; set the (offsetted) hi byte of the source column address
 
+SetPPUColTiles:
+  ;lda #%00000100
+  ;sta PPU_CTRL
+
+  bit PPU_STATUS              ; reset PPU_ADDR latch
+  lda DestColAddr+1           ; send hi byte of DestColAddr to PPU_ADDR
+  sta PPU_ADDR
+  lda DestColAddr             ; send lo byte of DestColAddr to PPU_ADDR
+  sta PPU_ADDR
+
+  ldy #0                      ; initialize index register value
+  ldx #30
+SetPPUColTilesLoop:           ; draw all 30 tiles (rows) of the current column
+  lda (SourceColAddr),Y       ; get column tile from source column address + offset
+  sta PPU_DATA                ; send value to PPU_DATA
+  iny                         ; increment index register value
+  dex
+  bne SetPPUColTilesLoop      ; have all 30 tiles (rows) of the current column been drawn?
+
   rts
 .endproc
 
