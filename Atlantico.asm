@@ -227,16 +227,15 @@ NewColumnCheck:
 
 ScrollBackground:
   inc XScroll                 ; increment horizontal scroll position
-  lda XScroll
   bne :+                      ; has the edge of the screen been reached?
       lda CurrNameTable       ; if yes, swap current 'starting' NameTable index in RAM
       eor #$01
       sta CurrNameTable
-      lda #%10010100          ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
-      ora CurrNameTable       ; set 'starting' NameTable
-      sta PPU_CTRL
-      lda XScroll             ; load XScroll (=0) again
-: sta PPU_SCROLL              ; set PPU_SCROLL's X value to XScroll value
+: lda #%10010100              ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
+  ora CurrNameTable           ; set 'starting' NameTable
+  sta PPU_CTRL                ; set PPU_CTRL with configs described above
+  lda XScroll                 ; set PPU_SCROLL's X value to XScroll value
+  sta PPU_SCROLL
   lda #$00                    ; set PPU_SCROLL's Y value to 0
   sta PPU_SCROLL
 
