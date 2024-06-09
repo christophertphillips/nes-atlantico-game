@@ -182,12 +182,32 @@ InitVariables:
   sta Frame
   sta Clock60
   sta XScroll                 ; initialize horizontal scroll position to 0
-  sta CurrNameTable           ; initialize the 'starting' NameTable
+  ;sta CurrNameTable          ; initialize the 'starting' NameTable
   sta SourceColIndex          ; initialize the source column index to 0
 
 Main:
   jsr LoadPalette             ; set palette data
   jsr LoadSprites             ; set sprites (from tiles)
+
+  lda #1                      ; temporarily set current CurNameTable to 1
+  sta CurrNameTable
+
+InitNameTableLoop:
+      jsr DrawNewColumn           ; draw a new column
+
+      lda XScroll                 ; increment XScroll by 8 (to load next column on next iteration)
+      clc
+      adc #8
+      sta XScroll
+
+      inc SourceColIndex          ; increment source column index
+
+      lda SourceColIndex          ; have all 32 initial columns been loaded?
+      cmp #32
+  bne InitNameTableLoop       ; if no, perform another iteration
+
+  lda #0                      ; revert CurNameTable back to 0
+  sta CurrNameTable
 
 EnableRendering:
   lda #%10010100              ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
