@@ -153,8 +153,8 @@ AddOffsetSourceColAddrHiByte:
   sta SourceColAddr+1         ; set the (offsetted) hi byte of the source column address
 
 SetPPUColTiles:
-  ;lda #%00000100
-  ;sta PPU_CTRL
+  lda #%00000100              ; increment PPU_DATA writes by 32
+  sta PPU_CTRL
 
   bit PPU_STATUS              ; reset PPU_ADDR latch
   lda DestColAddr+1           ; send hi byte of DestColAddr to PPU_ADDR
