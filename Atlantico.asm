@@ -294,6 +294,9 @@ NameTable1Data:
 BackgroundData:
 .include "backgrounddata.inc"
 
+AttributeData:
+.include "attributedata.inc"
+
 SpriteData:
 ;      Y   tile#  attributes   X
 .byte $A6,  $60,  %00000000,  $70 ; $200   _______________
