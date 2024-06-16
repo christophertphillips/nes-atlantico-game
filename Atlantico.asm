@@ -30,6 +30,9 @@ CurrNameTable:        .res 1  ; [$0C] store the current 'starting' NameTable (0 
 SourceColIndex:       .res 1  ; [$0D] index of source column
 DestColAddr:          .res 2  ; [$0E] address of destination column in PPU memory map
 SourceColAddr:        .res 2  ; [$10] address of source column in ROM
+SourceAttrChunkIndex: .res 1  ; [$12]
+DestAttrChunkAddr:    .res 2  ; [$13]
+SourceAttrChunkAddr:  .res 2  ; [$15]
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
@@ -174,6 +177,89 @@ SetPPUColTilesLoop:           ; draw all 30 tiles (rows) of the current column
   rts
 .endproc
 
+.proc LoadAttributeChunk
+  ; calculate destination attribute chunk address
+CalculateDestAttrChunkAddrLoByte:
+  lda XScroll                 ; divide current XScroll value by 32
+  lsr
+  lsr
+  lsr
+  lsr
+  lsr
+  sta DestAttrChunkAddr       ; set the lo byte of the destination chunk address ($00, $01, $02, ..., $07, $08)
+
+  CalculateDestAttrChunkAddrHiByte:
+  lda CurrNameTable         ; get current NameTable value (0 or 1) and multiply by 4
+  eor #1
+  asl
+  asl
+  clc
+  adc #$20                  ; add $20 (resulting in $20 or $24) for NameTable 0 or 1
+  sta DestAttrChunkAddr+1   ; set the hi byte of the destination column address ($20XX or $24XX)
+
+AddOffsetDestAttrChunkAddrLoByte:
+  lda DestAttrChunkAddr
+  clc
+  adc #$C0
+  sta DestAttrChunkAddr
+
+AddOffsetDestAttrChunkAddrHiByte:
+  lda DestAttrChunkAddr+1
+  adc #$03
+  sta DestAttrChunkAddr+1
+
+; calculate source column address
+CalculateSourceAttrChunkAddrLoByte:
+  lda SourceAttrChunkIndex    ; mutiply current source column index by 8
+  asl
+  asl
+  asl
+  sta SourceAttrChunkAddr    ; set the lo byte of the source attribute chunk address ($00, $08, $10, ..., $F0, $F8)
+
+CalculateSourceAttrChunkAddrHiByte:
+  lda #0
+  sta SourceAttrChunkAddr+1
+
+AddOffsetSourceAttrChunkAddrLoByte:
+  lda SourceAttrChunkAddr     ; add lo byte of BackgroundData offset to lo byte of SourceColAddr
+  clc
+  adc #<AttributeData
+  sta SourceAttrChunkAddr     ; set the (offsetted) lo byte of the source column address
+
+AddOffsetSourceAttrChunkAddrHiByte:
+  lda SourceAttrChunkAddr+1   ; add hi byte BackgroundData offset to lo byte of SourceColAddr
+  adc #>AttributeData
+  sta SourceAttrChunkAddr+1   ; set the (offsetted) hi byte of the source column address
+
+; set attributes
+  lda #%00000000
+  sta PPU_CTRL
+
+  ldy #0
+  ldx #8
+LoopAttrChunkValues:
+  
+  bit PPU_STATUS              ; set PPU_ADDR to address for current attribute chunk
+  lda DestAttrChunkAddr+1
+  sta PPU_ADDR
+  lda DestAttrChunkAddr
+  sta PPU_ADDR
+
+  lda (SourceAttrChunkAddr),Y ; load attribute chunk (byte)
+  sta PPU_DATA
+
+  lda DestAttrChunkAddr       ; increment DestAttrChunkAddr by 8 (to load next attribute chunk value in correct place)
+  clc
+  adc #8
+  sta DestAttrChunkAddr
+
+  iny                         ; increment index register value
+  dex
+  bne LoopAttrChunkValues     ; have all 8 attribute chunks been loaded?
+
+  rts
+.endproc
+
 Reset:
   INIT_NES
 
@@ -184,6 +270,7 @@ InitVariables:
   sta XScroll                 ; initialize horizontal scroll position to 0
   ;sta CurrNameTable          ; initialize the 'starting' NameTable
   sta SourceColIndex          ; initialize the source column index to 0
+  sta SourceAttrChunkIndex
 
 Main:
   jsr LoadPalette             ; set palette data
@@ -205,6 +292,22 @@ InitNameTableLoop:
       lda SourceColIndex          ; have all 32 initial columns been loaded?
       cmp #32
   bne InitNameTableLoop       ; if no, perform another iteration
+
+InitAttrLoop:
+  jsr LoadAttributeChunk
+
+  inc SourceAttrChunkIndex
+
+  lda XScroll
+  clc
+  adc #32
+  sta XScroll
+bne InitAttrLoop
+
+  ; lda #0
+  ; sta XScroll
+  ; lda #0
+  ; sta SourceAttrChunkIndex
 
   lda #0                      ; revert CurNameTable back to 0
   sta CurrNameTable
@@ -243,6 +346,14 @@ NewColumnCheck:
       adc #1
       and #$7F                ; ensure source column index <= 128
       sta SourceColIndex      ; store source column index
+:
+
+NewAttributeChunkCheck:
+ lda #$1F
+ bit XScroll
+ bne :+
+     jsr LoadAttributeChunk
+     inc SourceAttrChunkIndex
 :
 
 ScrollBackground:
