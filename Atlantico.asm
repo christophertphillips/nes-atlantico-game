@@ -31,7 +31,6 @@ SourceColIndex:       .res 1  ; [$0D] index of source column
 DestColAddr:          .res 2  ; [$0E] address of destination column in PPU memory map
 SourceColAddr:        .res 2  ; [$10] address of source column in ROM
 SourceAttrChunkIndex: .res 1  ; [$12]
-DestAttrChunkAddr:    .res 2  ; [$13]
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
@@ -185,7 +184,7 @@ CalculateDestAttrChunkAddrLoByte:
   lsr
   lsr
   lsr
-  sta DestAttrChunkAddr       ; set the lo byte of the destination chunk address ($00, $01, $02, ..., $07, $08)
+  sta DestColAddr             ; set the lo byte of the destination chunk address ($00, $01, $02, ..., $07, $08)
 
   CalculateDestAttrChunkAddrHiByte:
   lda CurrNameTable         ; get current NameTable value (0 or 1) and multiply by 4
@@ -194,18 +193,18 @@ CalculateDestAttrChunkAddrLoByte:
   asl
   clc
   adc #$20                  ; add $20 (resulting in $20 or $24) for NameTable 0 or 1
-  sta DestAttrChunkAddr+1   ; set the hi byte of the destination column address ($20XX or $24XX)
+  sta DestColAddr+1           ; set the hi byte of the destination column address ($20XX or $24XX)
 
 AddOffsetDestAttrChunkAddrLoByte:
-  lda DestAttrChunkAddr
+  lda DestColAddr
   clc
   adc #$C0
-  sta DestAttrChunkAddr
+  sta DestColAddr
 
 AddOffsetDestAttrChunkAddrHiByte:
-  lda DestAttrChunkAddr+1
+  lda DestColAddr+1
   adc #$03
-  sta DestAttrChunkAddr+1
+  sta DestColAddr+1
 
 ; calculate source column address
 CalculateSourceAttrChunkAddrLoByte:
@@ -239,18 +238,18 @@ AddOffsetSourceAttrChunkAddrHiByte:
 LoopAttrChunkValues:
   
   bit PPU_STATUS              ; set PPU_ADDR to address for current attribute chunk
-  lda DestAttrChunkAddr+1
+  lda DestColAddr+1
   sta PPU_ADDR
-  lda DestAttrChunkAddr
+  lda DestColAddr
   sta PPU_ADDR
 
   lda (SourceColAddr),Y ; load attribute chunk (byte)
   sta PPU_DATA
 
-  lda DestAttrChunkAddr       ; increment DestAttrChunkAddr by 8 (to load next attribute chunk value in correct place)
+  lda DestColAddr             ; increment DestAttrChunkAddr by 8 (to load next attribute chunk value in correct place)
   clc
   adc #8
-  sta DestAttrChunkAddr
+  sta DestColAddr
 
   iny                         ; increment index register value
   dex
