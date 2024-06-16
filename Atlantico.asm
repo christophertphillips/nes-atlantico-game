@@ -32,7 +32,6 @@ DestColAddr:          .res 2  ; [$0E] address of destination column in PPU memor
 SourceColAddr:        .res 2  ; [$10] address of source column in ROM
 SourceAttrChunkIndex: .res 1  ; [$12]
 DestAttrChunkAddr:    .res 2  ; [$13]
-SourceAttrChunkAddr:  .res 2  ; [$15]
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
@@ -214,22 +213,22 @@ CalculateSourceAttrChunkAddrLoByte:
   asl
   asl
   asl
-  sta SourceAttrChunkAddr    ; set the lo byte of the source attribute chunk address ($00, $08, $10, ..., $F0, $F8)
+  sta SourceColAddr    ; set the lo byte of the source attribute chunk address ($00, $08, $10, ..., $F0, $F8)
 
 CalculateSourceAttrChunkAddrHiByte:
   lda #0
-  sta SourceAttrChunkAddr+1
+  sta SourceColAddr+1
 
 AddOffsetSourceAttrChunkAddrLoByte:
-  lda SourceAttrChunkAddr     ; add lo byte of BackgroundData offset to lo byte of SourceColAddr
+  lda SourceColAddr     ; add lo byte of BackgroundData offset to lo byte of SourceColAddr
   clc
   adc #<AttributeData
-  sta SourceAttrChunkAddr     ; set the (offsetted) lo byte of the source column address
+  sta SourceColAddr     ; set the (offsetted) lo byte of the source column address
 
 AddOffsetSourceAttrChunkAddrHiByte:
-  lda SourceAttrChunkAddr+1   ; add hi byte BackgroundData offset to lo byte of SourceColAddr
+  lda SourceColAddr+1   ; add hi byte BackgroundData offset to lo byte of SourceColAddr
   adc #>AttributeData
-  sta SourceAttrChunkAddr+1   ; set the (offsetted) hi byte of the source column address
+  sta SourceColAddr+1   ; set the (offsetted) hi byte of the source column address
 
 ; set attributes
   lda #%00000000
@@ -245,7 +244,7 @@ LoopAttrChunkValues:
   lda DestAttrChunkAddr
   sta PPU_ADDR
 
-  lda (SourceAttrChunkAddr),Y ; load attribute chunk (byte)
+  lda (SourceColAddr),Y ; load attribute chunk (byte)
   sta PPU_DATA
 
   lda DestAttrChunkAddr       ; increment DestAttrChunkAddr by 8 (to load next attribute chunk value in correct place)
