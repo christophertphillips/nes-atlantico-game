@@ -30,7 +30,6 @@ CurrNameTable:        .res 1  ; [$0C] store the current 'starting' NameTable (0 
 SourceColIndex:       .res 1  ; [$0D] index of source column
 DestColAddr:          .res 2  ; [$0E] address of destination column in PPU memory map
 SourceColAddr:        .res 2  ; [$10] address of source column in ROM
-SourceAttrChunkIndex: .res 1  ; [$12]
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
@@ -267,7 +266,6 @@ InitVariables:
   sta XScroll                 ; initialize horizontal scroll position to 0
   ;sta CurrNameTable          ; initialize the 'starting' NameTable
   sta SourceColIndex          ; initialize the source column index to 0
-  sta SourceAttrChunkIndex
 
 Main:
   jsr LoadPalette             ; set palette data
@@ -284,7 +282,6 @@ InitNameTableLoop:
       bit SourceColIndex
       bne :+
           jsr LoadAttributeChunk  ; if yes, load a new attribute chunk
-          inc SourceAttrChunkIndex
 :
       lda XScroll                 ; increment XScroll by 8 (to load next column on next iteration)
       clc
@@ -299,8 +296,6 @@ InitNameTableLoop:
 
   ; lda #0
   ; sta XScroll
-  ; lda #0
-  ; sta SourceAttrChunkIndex
 
   lda #0                      ; revert CurNameTable back to 0
   sta CurrNameTable
@@ -346,7 +341,6 @@ NewAttributeChunkCheck:
  bit XScroll
  bne :+
      jsr LoadAttributeChunk
-     inc SourceAttrChunkIndex
 :
 
 ScrollBackground:
