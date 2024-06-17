@@ -280,6 +280,13 @@ Main:
 InitNameTableLoop:
       jsr DrawNewColumn           ; draw a new column
 
+    InitAttrChunkLoad:
+      lda #$03                ; is the column index a multiple of 4?
+      bit SourceColIndex
+      bne :+
+          jsr LoadAttributeChunk  ; if yes, load a new attribute chunk
+          inc SourceAttrChunkIndex
+:
       lda XScroll                 ; increment XScroll by 8 (to load next column on next iteration)
       clc
       adc #8
@@ -290,17 +297,6 @@ InitNameTableLoop:
       lda SourceColIndex          ; have all 32 initial columns been loaded?
       cmp #32
   bne InitNameTableLoop       ; if no, perform another iteration
-
-InitAttrLoop:
-  jsr LoadAttributeChunk
-
-  inc SourceAttrChunkIndex
-
-  lda XScroll
-  clc
-  adc #32
-  sta XScroll
-bne InitAttrLoop
 
   ; lda #0
   ; sta XScroll
