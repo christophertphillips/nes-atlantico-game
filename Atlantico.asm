@@ -208,9 +208,8 @@ AddOffsetDestAttrChunkAddrHiByte:
 
 ; calculate source column address
 CalculateSourceAttrChunkAddrLoByte:
-  lda SourceAttrChunkIndex    ; mutiply current source column index by 8
-  asl
-  asl
+  lda SourceColIndex          ; calculate (SourceColIndex / 4) * 8 = (SourceColIndex's closest lowest multiple of 4) * 2
+  and #$FC
   asl
   sta SourceColAddr    ; set the lo byte of the source attribute chunk address ($00, $08, $10, ..., $F0, $F8)
 
