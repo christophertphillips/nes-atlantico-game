@@ -175,7 +175,7 @@ SetPPUColTilesLoop:           ; draw all 30 tiles (rows) of the current column
 .endproc
 
 .proc LoadAttributeChunk
-  ; calculate destination attribute chunk address
+  ; calculate destination attribute chunk address (requires adding 960 to the base, e.g. $23C0 or $27C0)
 CalculateDestAttrChunkAddrLoByte:
   lda XScroll                 ; divide current XScroll value by 32
   lsr
@@ -183,7 +183,9 @@ CalculateDestAttrChunkAddrLoByte:
   lsr
   lsr
   lsr
-  sta DestColAddr             ; set the lo byte of the destination chunk address ($00, $01, $02, ..., $07, $08)
+  clc
+  adc #$C0                    ; add $C0 (due to 960 offset)
+  sta DestColAddr             ; set the lo byte of the destination chunk address ($C0, $C1, $C2, ..., $C6, $C7)
 
   CalculateDestAttrChunkAddrHiByte:
   lda CurrNameTable         ; get current NameTable value (0 or 1) and multiply by 4
@@ -191,19 +193,8 @@ CalculateDestAttrChunkAddrLoByte:
   asl
   asl
   clc
-  adc #$20                  ; add $20 (resulting in $20 or $24) for NameTable 0 or 1
-  sta DestColAddr+1           ; set the hi byte of the destination column address ($20XX or $24XX)
-
-AddOffsetDestAttrChunkAddrLoByte:
-  lda DestColAddr
-  clc
-  adc #$C0
-  sta DestColAddr
-
-AddOffsetDestAttrChunkAddrHiByte:
-  lda DestColAddr+1
-  adc #$03
-  sta DestColAddr+1
+  adc #$23                    ; add $23 (due to 960 offset) (resulting in $23 or $27) for NameTable 0 or 1
+  sta DestColAddr+1           ; set the hi byte of the destination column address ($23XX or $27XX)
 
 ; calculate source column address
 CalculateSourceAttrChunkAddrLoByte:
