@@ -174,7 +174,7 @@ SetPPUColTilesLoop:           ; draw all 30 tiles (rows) of the current column
   rts
 .endproc
 
-.proc LoadAttributeChunk
+.proc LoadAttributeBlock
   ; calculate destination attribute chunk address (requires adding 960 to the base, e.g. $23C0 or $27C0)
 CalculateDestAttrChunkAddrLoByte:
   lda XScroll                 ; divide current XScroll value by 32
@@ -272,7 +272,7 @@ InitNameTableLoop:
       lda #$03                ; is the column index a multiple of 4?
       bit SourceColIndex
       bne :+
-          jsr LoadAttributeChunk  ; if yes, load a new attribute chunk
+          jsr LoadAttributeBlock  ; if yes, load a new attribute chunk
 :
       lda XScroll                 ; increment XScroll by 8 (to load next column on next iteration)
       clc
@@ -331,7 +331,7 @@ NewAttributeChunkCheck:
  lda #$1F
  bit XScroll
  bne :+
-     jsr LoadAttributeChunk
+     jsr LoadAttributeBlock
 :
 
 ScrollBackground:
