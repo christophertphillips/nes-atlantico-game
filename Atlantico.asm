@@ -223,9 +223,7 @@ AddOffsetSourceAttrBlockAddrHiByte:
   sta PPU_CTRL
 
   ldy #0
-  ldx #8
 LoopAttrBlockValues:
-  
   bit PPU_STATUS              ; set PPU_ADDR to address for current attribute block
   lda DestAddr+1
   sta PPU_ADDR
@@ -241,8 +239,8 @@ LoopAttrBlockValues:
   sta DestAddr
 
   iny                         ; increment index register value
-  dex
-  bne LoopAttrBlockValues     ; have all 8 attribute blocks been loaded?
+  cpy #8                      ; have all 8 attribute blocks been loaded?
+  bne LoopAttrBlockValues
 
   rts
 .endproc
