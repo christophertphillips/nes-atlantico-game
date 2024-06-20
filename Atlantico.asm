@@ -175,8 +175,8 @@ SetPPUColTilesLoop:           ; draw all 30 tiles (rows) of the current column
 .endproc
 
 .proc LoadAttributeBlock
-  ; calculate destination attribute chunk address (requires adding 960 to the base, e.g. $23C0 or $27C0)
-CalculateDestAttrChunkAddrLoByte:
+  ; calculate destination attribute block address (requires adding 960 to the base, e.g. $23C0 or $27C0)
+CalculateDestAttrBlockAddrLoByte:
   lda XScroll                 ; divide current XScroll value by 32
   lsr
   lsr
@@ -185,9 +185,9 @@ CalculateDestAttrChunkAddrLoByte:
   lsr
   clc
   adc #$C0                    ; add $C0 (due to 960 offset)
-  sta DestAddr                ; set the lo byte of the destination chunk address ($C0, $C1, $C2, ..., $C6, $C7)
+  sta DestAddr                ; set the lo byte of the destination block address ($C0, $C1, $C2, ..., $C6, $C7)
 
-  CalculateDestAttrChunkAddrHiByte:
+  CalculateDestAttrBlockAddrHiByte:
   lda CurrNameTable         ; get current NameTable value (0 or 1) and multiply by 4
   eor #1
   asl
@@ -197,23 +197,23 @@ CalculateDestAttrChunkAddrLoByte:
   sta DestAddr+1              ; set the hi byte of the destination column address ($23XX or $27XX)
 
 ; calculate source column address
-CalculateSourceAttrChunkAddrLoByte:
+CalculateSourceAttrBlockAddrLoByte:
   lda SourceColIndex          ; calculate (SourceColIndex / 4) * 8 = (SourceColIndex's closest lowest multiple of 4) * 2
   and #$FC
   asl
-  sta SourceAddr              ; set the lo byte of the source attribute chunk address ($00, $08, $10, ..., $F0, $F8)
+  sta SourceAddr              ; set the lo byte of the source attribute block address ($00, $08, $10, ..., $F0, $F8)
 
-CalculateSourceAttrChunkAddrHiByte:
+CalculateSourceAttrBlockAddrHiByte:
   lda #0
   sta SourceAddr+1
 
-AddOffsetSourceAttrChunkAddrLoByte:
+AddOffsetSourceAttrBlockAddrLoByte:
   lda SourceAddr              ; add lo byte of BackgroundData offset to lo byte of SourceAddr
   clc
   adc #<AttributeData
   sta SourceAddr              ; set the (offsetted) lo byte of the source column address
 
-AddOffsetSourceAttrChunkAddrHiByte:
+AddOffsetSourceAttrBlockAddrHiByte:
   lda SourceAddr+1            ; add hi byte BackgroundData offset to lo byte of SourceAddr
   adc #>AttributeData
   sta SourceAddr+1            ; set the (offsetted) hi byte of the source column address
@@ -224,25 +224,25 @@ AddOffsetSourceAttrChunkAddrHiByte:
 
   ldy #0
   ldx #8
-LoopAttrChunkValues:
+LoopAttrBlockValues:
   
-  bit PPU_STATUS              ; set PPU_ADDR to address for current attribute chunk
+  bit PPU_STATUS              ; set PPU_ADDR to address for current attribute block
   lda DestAddr+1
   sta PPU_ADDR
   lda DestAddr
   sta PPU_ADDR
 
-  lda (SourceAddr),Y          ; load attribute chunk (byte)
+  lda (SourceAddr),Y          ; load attribute block (byte)
   sta PPU_DATA
 
-  lda DestAddr                ; increment DestAttrChunkAddr by 8 (to load next attribute chunk value in correct place)
+  lda DestAddr                ; increment DestAttrBlockAddr by 8 (to load next attribute block value in correct place)
   clc
   adc #8
   sta DestAddr
 
   iny                         ; increment index register value
   dex
-  bne LoopAttrChunkValues     ; have all 8 attribute chunks been loaded?
+  bne LoopAttrBlockValues     ; have all 8 attribute blocks been loaded?
 
   rts
 .endproc
@@ -268,11 +268,11 @@ Main:
 InitNameTableLoop:
       jsr DrawNewColumn           ; draw a new column
 
-    InitAttrChunkLoad:
+    InitAttrBlockLoad:
       lda #$03                ; is the column index a multiple of 4?
       bit SourceColIndex
       bne :+
-          jsr LoadAttributeBlock  ; if yes, load a new attribute chunk
+          jsr LoadAttributeBlock  ; if yes, load a new attribute block
 :
       lda XScroll                 ; increment XScroll by 8 (to load next column on next iteration)
       clc
@@ -327,7 +327,7 @@ NewColumnCheck:
       sta SourceColIndex      ; store source column index
 :
 
-NewAttributeChunkCheck:
+NewAttributeBlockCheck:
  lda #$1F
  bit XScroll
  bne :+
