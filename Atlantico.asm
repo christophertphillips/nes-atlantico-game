@@ -28,7 +28,7 @@ BgPtr:                .res 2  ; [$09] pointer to the background address
 XScroll:              .res 1  ; [$0B] horizontal scroll position
 CurrNameTable:        .res 1  ; [$0C] store the current 'starting' NameTable (0 or 1)
 SourceColIndex:       .res 1  ; [$0D] index of source column
-DestColAddr:          .res 2  ; [$0E] address of destination column in PPU memory map
+DestAddr:             .res 2  ; [$0E] address of destination column in PPU memory map
 SourceAddr:           .res 2  ; [$10] address of source column/attribute in ROM
 
 ;--------------------------------------------------------
@@ -112,7 +112,7 @@ CalculateDestColAddrLoByte:
   lsr
   lsr
   lsr
-  sta DestColAddr           ; set the lo byte of the destination column address ($00, $01, $02, ..., $1E, $1F)
+  sta DestAddr                ; set the lo byte of the destination column address ($00, $01, $02, ..., $1E, $1F)
 
 CalculateDestColAddrHiByte:
   lda CurrNameTable         ; get current NameTable value (0 or 1) and multiply by 4
@@ -121,7 +121,7 @@ CalculateDestColAddrHiByte:
   asl
   clc
   adc #$20                  ; add $20 (resulting in $20 or $24) for NameTable 0 or 1
-  sta DestColAddr+1         ; set the hi byte of the destination column address ($20XX or $24XX)
+  sta DestAddr+1              ; set the hi byte of the destination column address ($20XX or $24XX)
 
   ; calculate source column address
 CalculateSourceColAddrLoByte:
@@ -157,9 +157,9 @@ SetPPUColTiles:
   sta PPU_CTRL
 
   bit PPU_STATUS              ; reset PPU_ADDR latch
-  lda DestColAddr+1           ; send hi byte of DestColAddr to PPU_ADDR
+  lda DestAddr+1              ; send hi byte of DestAddr to PPU_ADDR
   sta PPU_ADDR
-  lda DestColAddr             ; send lo byte of DestColAddr to PPU_ADDR
+  lda DestAddr                ; send lo byte of DestAddr to PPU_ADDR
   sta PPU_ADDR
 
   ldy #0                      ; initialize index register value
@@ -185,7 +185,7 @@ CalculateDestAttrChunkAddrLoByte:
   lsr
   clc
   adc #$C0                    ; add $C0 (due to 960 offset)
-  sta DestColAddr             ; set the lo byte of the destination chunk address ($C0, $C1, $C2, ..., $C6, $C7)
+  sta DestAddr                ; set the lo byte of the destination chunk address ($C0, $C1, $C2, ..., $C6, $C7)
 
   CalculateDestAttrChunkAddrHiByte:
   lda CurrNameTable         ; get current NameTable value (0 or 1) and multiply by 4
@@ -194,7 +194,7 @@ CalculateDestAttrChunkAddrLoByte:
   asl
   clc
   adc #$23                    ; add $23 (due to 960 offset) (resulting in $23 or $27) for NameTable 0 or 1
-  sta DestColAddr+1           ; set the hi byte of the destination column address ($23XX or $27XX)
+  sta DestAddr+1              ; set the hi byte of the destination column address ($23XX or $27XX)
 
 ; calculate source column address
 CalculateSourceAttrChunkAddrLoByte:
@@ -227,18 +227,18 @@ AddOffsetSourceAttrChunkAddrHiByte:
 LoopAttrChunkValues:
   
   bit PPU_STATUS              ; set PPU_ADDR to address for current attribute chunk
-  lda DestColAddr+1
+  lda DestAddr+1
   sta PPU_ADDR
-  lda DestColAddr
+  lda DestAddr
   sta PPU_ADDR
 
   lda (SourceAddr),Y          ; load attribute chunk (byte)
   sta PPU_DATA
 
-  lda DestColAddr             ; increment DestAttrChunkAddr by 8 (to load next attribute chunk value in correct place)
+  lda DestAddr                ; increment DestAttrChunkAddr by 8 (to load next attribute chunk value in correct place)
   clc
   adc #8
-  sta DestColAddr
+  sta DestAddr
 
   iny                         ; increment index register value
   dex
