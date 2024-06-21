@@ -226,9 +226,8 @@ AddOffsetSourceAttrBlockAddrHiByte:
   adc #>AttributeData
   sta SourceAddr+1            ; set the (offsetted) hi byte of the attribute block address
 
-; set attributes
-  lda #%00000000
-  sta PPU_CTRL
+  ; lda #%00000000            ; no need to set PPU_CTRL's increment value, since we manually set PPU_ADDR every loop iteration
+  ; sta PPU_CTRL
 
   ; send attribute block values to PPU
   ldy #0
