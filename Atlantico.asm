@@ -185,7 +185,7 @@ CalculateDestAttrBlockAddrLoByte:
   lsr
   clc
   adc #$C0                    ; add $C0 (due to 960 offset)
-  sta DestAddr                ; set the lo byte of the destination block address ($C0, $C1, $C2, ..., $C6, $C7)
+  sta DestAddr                ; set the lo byte of the destination attribute block address ($C0, $C1, $C2, ..., $C6, $C7)
 
   CalculateDestAttrBlockAddrHiByte:
   lda CurrNameTable         ; get current NameTable value (0 or 1) and multiply by 4
@@ -194,13 +194,13 @@ CalculateDestAttrBlockAddrLoByte:
   asl
   clc
   adc #$23                    ; add $23 (due to 960 offset) (resulting in $23 or $27) for NameTable 0 or 1
-  sta DestAddr+1              ; set the hi byte of the destination column address ($23XX or $27XX)
+  sta DestAddr+1              ; set the hi byte of the destination attribute block address ($23XX or $27XX)
 
 ; calculate source column address
 CalculateSourceAttrBlockAddrLoByte:
   lda SourceColIndex          ; calculate (SourceColIndex / 4) * 8 = (SourceColIndex's closest lowest multiple of 4) * 2
-  and #$FC
-  asl
+  and #$FC                    ; get closet lowest multiple of 4
+  asl                         ; multiply by 2
   sta SourceAddr              ; set the lo byte of the source attribute block address ($00, $08, $10, ..., $F0, $F8)
 
 CalculateSourceAttrBlockAddrHiByte:
@@ -212,41 +212,43 @@ CalculateSourceAttrBlockAddrHiByte:
   lsr
   lsr
   lsr
-  sta SourceAddr+1          ; set the hi byte of the source column ($00XX, $01XX, $02XX, ...)
+  sta SourceAddr+1          ; set the hi byte of the source attribute block address ($00XX, $01XX, $02XX, ...)
 
+  ; add AttributeData offset to source column address
 AddOffsetSourceAttrBlockAddrLoByte:
   lda SourceAddr              ; add lo byte of BackgroundData offset to lo byte of SourceAddr
   clc
   adc #<AttributeData
-  sta SourceAddr              ; set the (offsetted) lo byte of the source column address
+  sta SourceAddr              ; set the (offsetted) lo byte of the attribute block address
 
 AddOffsetSourceAttrBlockAddrHiByte:
   lda SourceAddr+1            ; add hi byte BackgroundData offset to lo byte of SourceAddr
   adc #>AttributeData
-  sta SourceAddr+1            ; set the (offsetted) hi byte of the source column address
+  sta SourceAddr+1            ; set the (offsetted) hi byte of the attribute block address
 
 ; set attributes
   lda #%00000000
   sta PPU_CTRL
 
+  ; send attribute block values to PPU
   ldy #0
 LoopAttrBlockValues:
   bit PPU_STATUS              ; set PPU_ADDR to address for current attribute block
-  lda DestAddr+1
+  lda DestAddr+1              ; send hi byte of DestAddr to PPU_ADDR
   sta PPU_ADDR
-  lda DestAddr
+  lda DestAddr                ; send lo byte of DestAddr to PPU_ADDR
   sta PPU_ADDR
 
-  lda (SourceAddr),Y          ; load attribute block (byte)
-  sta PPU_DATA
+  lda (SourceAddr),Y          ; get attribute block from source column address + offset
+  sta PPU_DATA                ; send value to PPU_DATA
 
-  lda DestAddr                ; increment DestAttrBlockAddr by 8 (to load next attribute block value in correct place)
-  clc
+  lda DestAddr                ; increment DestAttrBlockAddr by 8
+  clc                         ; (to load next attribute block value in correct place)
   adc #8
   sta DestAddr
 
   iny                         ; increment index register value
-  cpy #8                      ; have all 8 attribute blocks been loaded?
+  cpy #8                      ; have all 8 attribute blocks (rows) of the current attribute block column been drawn?
   bne LoopAttrBlockValues
 
   rts
