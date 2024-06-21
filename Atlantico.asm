@@ -204,8 +204,15 @@ CalculateSourceAttrBlockAddrLoByte:
   sta SourceAddr              ; set the lo byte of the source attribute block address ($00, $08, $10, ..., $F0, $F8)
 
 CalculateSourceAttrBlockAddrHiByte:
-  lda #0
-  sta SourceAddr+1
+  lda SourceColIndex        ; divide the current source column index by 128
+  lsr                       ; (bc topmost bit must be incremented every 32 attribute tile columns, and
+  lsr                       ;  SourceColIndex increases by 4 for every attribute tile column,
+  lsr                       ;  thus 32 * 4 = 128)
+  lsr
+  lsr
+  lsr
+  lsr
+  sta SourceAddr+1          ; set the hi byte of the source column ($00XX, $01XX, $02XX, ...)
 
 AddOffsetSourceAttrBlockAddrLoByte:
   lda SourceAddr              ; add lo byte of BackgroundData offset to lo byte of SourceAddr
