@@ -231,7 +231,7 @@ AddOffsetSourceAttrBlockAddrHiByte:
 
   ; send attribute block values to PPU
   ldy #0
-LoopAttrBlockValues:
+SetPPUAttrBlocks:
   bit PPU_STATUS              ; set PPU_ADDR to address for current attribute block
   lda DestAddr+1              ; send hi byte of DestAddr to PPU_ADDR
   sta PPU_ADDR
@@ -248,7 +248,7 @@ LoopAttrBlockValues:
 
   iny                         ; increment index register value
   cpy #8                      ; have all 8 attribute blocks (rows) of the current attribute block column been drawn?
-  bne LoopAttrBlockValues
+  bne SetPPUAttrBlocks
 
   rts
 .endproc
