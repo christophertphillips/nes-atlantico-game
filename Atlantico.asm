@@ -105,7 +105,7 @@ Loop:
   rts                       ; else, return from subroutine
 .endproc
 
-.proc DrawNewColumn
+.proc LoadColumnTiles
   ; calculate destination column address
 CalculateDestColAddrLoByte:
   lda XScroll               ; divide current XScroll value by 8
@@ -272,7 +272,7 @@ Main:
   sta CurrNameTable
 
 InitNameTableLoop:
-      jsr DrawNewColumn           ; draw a new column
+      jsr LoadColumnTiles           ; load a new set of column tiles
 
     InitAttrBlockLoad:
       lda #$03                ; is the column index a multiple of 4?
@@ -324,7 +324,7 @@ NewColumnCheck:
   lda #$07                    ; has the screen scrolled by 8 pixels/units?
   bit XScroll
   bne :+                      ; if no, skip
-      jsr DrawNewColumn       ; draw a new column
+      jsr LoadColumnTiles       ; load a new set of column tiles
 
       lda SourceColIndex      ; else, increment source column index
       clc
