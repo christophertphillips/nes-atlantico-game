@@ -8,28 +8,28 @@
 ; ROM-specific constants
 ;--------------------------------------------------------
 
-MAXSPEED  = 120               ; Max player speed in 1/256 px/frame
-ACCEL     = 2                 ; Movement acceleration in 1/256 px/frame^2
-BRAKE     = 2                 ; Movement deceleration in 1/256 px/frame^2
+MAXSPEED  = 120                         ; Max player speed in 1/256 px/frame
+ACCEL     = 2                           ; Movement acceleration in 1/256 px/frame^2
+BRAKE     = 2                           ; Movement deceleration in 1/256 px/frame^2
 
 ;--------------------------------------------------------
 ; RAM
 ;--------------------------------------------------------
 
 .segment "ZEROPAGE"
-Buttons:              .res 1  ; [$00] button state
-XPos:                 .res 2  ; [$01] player X position, (8.8 fixed-point math), (Xhi + Xlo/256) pixels
-YPos:                 .res 2  ; [$03] player Y position, (8.8 fixed-point math), (Yhi + Ylo/256) pixels
-XVel:                 .res 1  ; [$05] player X speed in pixels per 256 frames (pixel/256frames)
-YVel:                 .res 1  ; [$06] player Y speed in pixels per 256 frames (pixel/256frames)
-Frame:                .res 1  ; [$07] # of frames
-Clock60:              .res 1  ; [$08] # of elapsed seconds
-BgPtr:                .res 2  ; [$09] pointer to the background address
-XScroll:              .res 1  ; [$0B] horizontal scroll position
-CurrNameTable:        .res 1  ; [$0C] store the current 'starting' NameTable (0 or 1)
-SourceColIndex:       .res 1  ; [$0D] index of source column
-DestAddr:             .res 2  ; [$0E] address of destination column in PPU memory map
-SourceAddr:           .res 2  ; [$10] address of source column/attribute in ROM
+Buttons:              .res 1            ; [$00] button state
+XPos:                 .res 2            ; [$01] player X position, (8.8 fixed-point math), (Xhi + Xlo/256) pixels
+YPos:                 .res 2            ; [$03] player Y position, (8.8 fixed-point math), (Yhi + Ylo/256) pixels
+XVel:                 .res 1            ; [$05] player X speed in pixels per 256 frames (pixel/256frames)
+YVel:                 .res 1            ; [$06] player Y speed in pixels per 256 frames (pixel/256frames)
+Frame:                .res 1            ; [$07] # of frames
+Clock60:              .res 1            ; [$08] # of elapsed seconds
+BgPtr:                .res 2            ; [$09] pointer to the background address
+XScroll:              .res 1            ; [$0B] horizontal scroll position
+CurrNameTable:        .res 1            ; [$0C] store the current 'starting' NameTable (0 or 1)
+SourceColIndex:       .res 1            ; [$0D] index of source column
+DestAddr:             .res 2            ; [$0E] address of destination column in PPU memory map
+SourceAddr:           .res 2            ; [$10] address of source column/attribute in ROM
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
@@ -38,138 +38,138 @@ SourceAddr:           .res 2  ; [$10] address of source column/attribute in ROM
 .segment "CODE"
 
 .proc LoadPalette
-  PPU_SETADDR $3F00           ; set PPU address to $3F00
+  PPU_SETADDR $3F00                     ; set PPU address to $3F00
 
  ldx #0
 Loop:
-  lda PaletteData,X           ; get color value
-  sta PPU_DATA                ; send value to PPU_DATA
+  lda PaletteData,X                     ; get color value
+  sta PPU_DATA                          ; send value to PPU_DATA
   inx
-  cpx #32                     ; loop through all 32 colors
+  cpx #32                               ; loop through all 32 colors
   bne Loop
 
   rts
 .endproc
 
 .proc LoadNameTable0
-  lda #<NameTable0Data        ; load lower byte of NameTable[0/1]Data address
+  lda #<NameTable0Data                  ; load lower byte of NameTable[0/1]Data address
   sta BgPtr
-  lda #>NameTable0Data        ; load upper byte of NameTable[0/1]Data address
+  lda #>NameTable0Data                  ; load upper byte of NameTable[0/1]Data address
   sta BgPtr+1
 
-  PPU_SETADDR $2000           ; set PPU address to $2000
+  PPU_SETADDR $2000                     ; set PPU address to $2000
 
-  LOOP_BACKGROUND_DATA         ; load all nametable data
+  LOOP_BACKGROUND_DATA                  ; load all nametable data
 
-  rts                         ; else, return from subroutine
+  rts                                   ; else, return from subroutine
 .endproc
 
 .proc LoadNameTable1
-  lda #<NameTable1Data        ; load lower byte of NameTable[0/1]Data address
+  lda #<NameTable1Data                  ; load lower byte of NameTable[0/1]Data address
   sta BgPtr
-  lda #>NameTable1Data        ; load upper byte of NameTable[0/1]Data address
+  lda #>NameTable1Data                  ; load upper byte of NameTable[0/1]Data address
   sta BgPtr+1
 
-  PPU_SETADDR $2400           ; set PPU address to $2000
+  PPU_SETADDR $2400                     ; set PPU address to $2000
 
-  LOOP_BACKGROUND_DATA         ; load all nametable data
+  LOOP_BACKGROUND_DATA                  ; load all nametable data
 
-  rts                         ; else, return from subroutine
+  rts                                   ; else, return from subroutine
 .endproc
 
 .proc LoadSprites
   ldx #0
 Loop:
-  lda SpriteData,X          ; load tile
-  sta $0200,X               ; send tile to RAM (to be transferred to VRAM via DMA later)
+  lda SpriteData,X                      ; load tile
+  sta $0200,X                           ; send tile to RAM (to be transferred to VRAM via DMA later)
   inx
-  cpx #16                   ; check if all tiles have been send to RAM
-  bne Loop                  ; if no, loop and store next tile
+  cpx #16                               ; check if all tiles have been send to RAM
+  bne Loop                              ; if no, loop and store next tile
 
-  rts                       ; else, return from subroutine
+  rts                                   ; else, return from subroutine
 .endproc
 
 .proc ReadControllers
-  lda #1                    ; set rightmost of Buttons to 1; use later to determine when Buttons is 'full'
+  lda #1                                ; set rightmost of Buttons to 1; use later to determine when Buttons is 'full'
   sta Buttons
-  sta JOYPAD_1              ; strobe latch to 'input mode' via Latch line
+  sta JOYPAD_1                          ; strobe latch to 'input mode' via Latch line
   lda #0
-  sta JOYPAD_1              ; strobe latch to 'output mode' via Latch line
+  sta JOYPAD_1                          ; strobe latch to 'output mode' via Latch line
 Loop:
-  lda JOYPAD_1              ; 1) read bit from Data line and invert its
-                            ; 2) send signal via Clock line to shift bits inside controller
-  lsr                       ; right-shift accumualtor to put the just-read bit into the carry flag
-  rol Buttons               ; rotate-left Buttons to put the carry flag into the rightmost Buttons bit; initial 1 bit moves rightward
-  bcc Loop                  ; if initial 1 bit has not reached the carry due to rol, get next controller bit
+  lda JOYPAD_1                          ; 1) read bit from Data line and invert its
+                                        ; 2) send signal via Clock line to shift bits inside controller
+  lsr                                   ; right-shift accumualtor to put the just-read bit into the carry flag
+  rol Buttons                           ; rotate-left Buttons to put the carry flag into the rightmost Buttons bit; initial 1 bit moves rightward
+  bcc Loop                              ; if initial 1 bit has not reached the carry due to rol, get next controller bit
 
-  rts                       ; else, return from subroutine
+  rts                                   ; else, return from subroutine
 .endproc
 
 .proc LoadColumnTiles
   ; calculate destination column address
 CalculateDestColAddrLoByte:
-  lda XScroll               ; divide current XScroll value by 8
+  lda XScroll                           ; divide current XScroll value by 8
   lsr
   lsr
   lsr
-  sta DestAddr                ; set the lo byte of the destination column address ($00, $01, $02, ..., $1E, $1F)
+  sta DestAddr                          ; set the lo byte of the destination column address ($00, $01, $02, ..., $1E, $1F)
 
 CalculateDestColAddrHiByte:
-  lda CurrNameTable         ; get current NameTable value (0 or 1) and multiply by 4
+  lda CurrNameTable                     ; get current NameTable value (0 or 1) and multiply by 4
   eor #1
   asl
   asl
   clc
-  adc #$20                  ; add $20 (resulting in $20 or $24) for NameTable 0 or 1
-  sta DestAddr+1              ; set the hi byte of the destination column address ($20XX or $24XX)
+  adc #$20                              ; add $20 (resulting in $20 or $24) for NameTable 0 or 1
+  sta DestAddr+1                        ; set the hi byte of the destination column address ($20XX or $24XX)
 
   ; calculate source column address
 CalculateSourceColAddrLoByte:
-  lda SourceColIndex          ; mutiply current source column index by 32
+  lda SourceColIndex                    ; mutiply current source column index by 32
   asl
   asl
   asl
   asl
   asl
-  sta SourceAddr              ; set the lo byte of the source column address ($00, $20, $40, $60, $80, $A0, $C0, $E0)
+  sta SourceAddr                        ; set the lo byte of the source column address ($00, $20, $40, $60, $80, $A0, $C0, $E0)
 
 CalculateSourceColAddrHiByte:
-  lda SourceColIndex          ; divide the current source column index by 8
+  lda SourceColIndex                    ; divide the current source column index by 8
   lsr
   lsr
   lsr
-  sta SourceAddr+1            ; set the hi byte of the source column ($00XX, $01XX, $02XX, ...)
+  sta SourceAddr+1                      ; set the hi byte of the source column ($00XX, $01XX, $02XX, ...)
 
   ; add BackgroundData offset to source column address
 AddOffsetSourceColAddrLoByte:
-  lda SourceAddr              ; add lo byte of BackgroundData offset to lo byte of SourceAddr
+  lda SourceAddr                        ; add lo byte of BackgroundData offset to lo byte of SourceAddr
   clc
   adc #<BackgroundData
-  sta SourceAddr              ; set the (offsetted) lo byte of the source column address
+  sta SourceAddr                        ; set the (offsetted) lo byte of the source column address
 
 AddOffsetSourceColAddrHiByte:
-  lda SourceAddr+1            ; add hi byte of BackgroundData offset to hi byte of SourceAddr
+  lda SourceAddr+1                      ; add hi byte of BackgroundData offset to hi byte of SourceAddr
   adc #>BackgroundData
-  sta SourceAddr+1            ; set the (offsetted) hi byte of the source column address
+  sta SourceAddr+1                      ; set the (offsetted) hi byte of the source column address
 
 SetPPUColTiles:
-  lda #%00000100              ; increment PPU_DATA writes by 32
+  lda #%00000100                        ; increment PPU_DATA writes by 32
   sta PPU_CTRL
 
-  bit PPU_STATUS              ; reset PPU_ADDR latch
-  lda DestAddr+1              ; send hi byte of DestAddr to PPU_ADDR
+  bit PPU_STATUS                        ; reset PPU_ADDR latch
+  lda DestAddr+1                        ; send hi byte of DestAddr to PPU_ADDR
   sta PPU_ADDR
-  lda DestAddr                ; send lo byte of DestAddr to PPU_ADDR
+  lda DestAddr                          ; send lo byte of DestAddr to PPU_ADDR
   sta PPU_ADDR
 
-  ldy #0                      ; initialize index register value
+  ldy #0                                ; initialize index register value
   ldx #30
-SetPPUColTilesLoop:           ; draw all 30 tiles (rows) of the current column
-  lda (SourceAddr),Y          ; get column tile from source column address + offset
-  sta PPU_DATA                ; send value to PPU_DATA
-  iny                         ; increment index register value
+SetPPUColTilesLoop:                     ; draw all 30 tiles (rows) of the current column
+  lda (SourceAddr),Y                    ; get column tile from source column address + offset
+  sta PPU_DATA                          ; send value to PPU_DATA
+  iny                                   ; increment index register value
   dex
-  bne SetPPUColTilesLoop      ; have all 30 tiles (rows) of the current column been drawn?
+  bne SetPPUColTilesLoop                ; have all 30 tiles (rows) of the current column been drawn?
 
   rts
 .endproc
@@ -177,77 +177,77 @@ SetPPUColTilesLoop:           ; draw all 30 tiles (rows) of the current column
 .proc LoadAttributeBlocks
   ; calculate destination attribute block address (requires adding 960 to the base, e.g. $23C0 or $27C0)
 CalculateDestAttrBlockAddrLoByte:
-  lda XScroll                 ; divide current XScroll value by 32
+  lda XScroll                           ; divide current XScroll value by 32
   lsr
   lsr
   lsr
   lsr
   lsr
   clc
-  adc #$C0                    ; add $C0 (due to 960 offset)
-  sta DestAddr                ; set the lo byte of the destination attribute block address ($C0, $C1, $C2, ..., $C6, $C7)
+  adc #$C0                              ; add $C0 (due to 960 offset)
+  sta DestAddr                          ; set the lo byte of the destination attribute block address ($C0, $C1, $C2, ..., $C6, $C7)
 
   CalculateDestAttrBlockAddrHiByte:
-  lda CurrNameTable         ; get current NameTable value (0 or 1) and multiply by 4
+  lda CurrNameTable                     ; get current NameTable value (0 or 1) and multiply by 4
   eor #1
   asl
   asl
   clc
-  adc #$23                    ; add $23 (due to 960 offset) (resulting in $23 or $27) for NameTable 0 or 1
-  sta DestAddr+1              ; set the hi byte of the destination attribute block address ($23XX or $27XX)
+  adc #$23                              ; add $23 (due to 960 offset) (resulting in $23 or $27) for NameTable 0 or 1
+  sta DestAddr+1                        ; set the hi byte of the destination attribute block address ($23XX or $27XX)
 
 ; calculate source column address
 CalculateSourceAttrBlockAddrLoByte:
-  lda SourceColIndex          ; calculate (SourceColIndex / 4) * 8 = (SourceColIndex's closest lowest multiple of 4) * 2
-  and #$FC                    ; get closet lowest multiple of 4
-  asl                         ; multiply by 2
-  sta SourceAddr              ; set the lo byte of the source attribute block address ($00, $08, $10, ..., $F0, $F8)
+  lda SourceColIndex                    ; calculate (SourceColIndex / 4) * 8 = (SourceColIndex's closest lowest multiple of 4) * 2
+  and #$FC                              ; get closet lowest multiple of 4
+  asl                                   ; multiply by 2
+  sta SourceAddr                        ; set the lo byte of the source attribute block address ($00, $08, $10, ..., $F0, $F8)
 
 CalculateSourceAttrBlockAddrHiByte:
-  lda SourceColIndex        ; divide the current source column index by 128
-  lsr                       ; (bc topmost bit must be incremented every 32 attribute tile columns, and
-  lsr                       ;  SourceColIndex increases by 4 for every attribute tile column,
-  lsr                       ;  thus 32 * 4 = 128)
+  lda SourceColIndex                    ; divide the current source column index by 128
+  lsr                                   ; (bc topmost bit must be incremented every 32 attribute tile columns, and
+  lsr                                   ;  SourceColIndex increases by 4 for every attribute tile column,
+  lsr                                   ;  thus 32 * 4 = 128)
   lsr
   lsr
   lsr
   lsr
-  sta SourceAddr+1          ; set the hi byte of the source attribute block address ($00XX, $01XX, $02XX, ...)
+  sta SourceAddr+1                      ; set the hi byte of the source attribute block address ($00XX, $01XX, $02XX, ...)
 
   ; add AttributeData offset to source column address
 AddOffsetSourceAttrBlockAddrLoByte:
-  lda SourceAddr              ; add lo byte of BackgroundData offset to lo byte of SourceAddr
+  lda SourceAddr                        ; add lo byte of BackgroundData offset to lo byte of SourceAddr
   clc
   adc #<AttributeData
-  sta SourceAddr              ; set the (offsetted) lo byte of the attribute block address
+  sta SourceAddr                        ; set the (offsetted) lo byte of the attribute block address
 
 AddOffsetSourceAttrBlockAddrHiByte:
-  lda SourceAddr+1            ; add hi byte BackgroundData offset to lo byte of SourceAddr
+  lda SourceAddr+1                      ; add hi byte BackgroundData offset to lo byte of SourceAddr
   adc #>AttributeData
-  sta SourceAddr+1            ; set the (offsetted) hi byte of the attribute block address
+  sta SourceAddr+1                      ; set the (offsetted) hi byte of the attribute block address
 
-  ; lda #%00000000            ; no need to set PPU_CTRL's increment value, since we manually set PPU_ADDR every loop iteration
+  ; lda #%00000000                      ; no need to set PPU_CTRL's increment value, since we manually set PPU_ADDR every loop iteration
   ; sta PPU_CTRL
 
   ; send attribute block values to PPU
   ldy #0
 SetPPUAttrBlocks:
-  bit PPU_STATUS              ; set PPU_ADDR to address for current attribute block
-  lda DestAddr+1              ; send hi byte of DestAddr to PPU_ADDR
+  bit PPU_STATUS                        ; set PPU_ADDR to address for current attribute block
+  lda DestAddr+1                        ; send hi byte of DestAddr to PPU_ADDR
   sta PPU_ADDR
-  lda DestAddr                ; send lo byte of DestAddr to PPU_ADDR
+  lda DestAddr                          ; send lo byte of DestAddr to PPU_ADDR
   sta PPU_ADDR
 
-  lda (SourceAddr),Y          ; get attribute block from source column address + offset
-  sta PPU_DATA                ; send value to PPU_DATA
+  lda (SourceAddr),Y                    ; get attribute block from source column address + offset
+  sta PPU_DATA                          ; send value to PPU_DATA
 
-  lda DestAddr                ; increment DestAttrBlockAddr by 8
-  clc                         ; (to load next attribute block value in correct place)
+  lda DestAddr                          ; increment DestAttrBlockAddr by 8
+  clc                                   ; (to load next attribute block value in correct place)
   adc #8
   sta DestAddr
 
-  iny                         ; increment index register value
-  cpy #8                      ; have all 8 attribute blocks (rows) of the current attribute block column been drawn?
+  iny                                   ; increment index register value
+  cpy #8                                ; have all 8 attribute blocks (rows) of the current attribute block column been drawn?
   bne SetPPUAttrBlocks
 
   rts
@@ -257,56 +257,56 @@ Reset:
   INIT_NES
 
 InitVariables:
-  lda #0                      ; set frame, clock counters to 0
+  lda #0                                ; set frame, clock counters to 0
   sta Frame
   sta Clock60
-  sta XScroll                 ; initialize horizontal scroll position to 0
-  ;sta CurrNameTable          ; initialize the 'starting' NameTable
-  sta SourceColIndex          ; initialize the source column index to 0
+  sta XScroll                           ; initialize horizontal scroll position to 0
+  ;sta CurrNameTable                    ; initialize the 'starting' NameTable
+  sta SourceColIndex                    ; initialize the source column index to 0
 
 Main:
-  jsr LoadPalette             ; set palette data
-  jsr LoadSprites             ; set sprites (from tiles)
+  jsr LoadPalette                       ; set palette data
+  jsr LoadSprites                       ; set sprites (from tiles)
 
-  lda #1                      ; temporarily set current CurNameTable to 1
+  lda #1                                ; temporarily set current CurNameTable to 1
   sta CurrNameTable
 
 InitNameTableLoop:
-      jsr LoadColumnTiles           ; load a new set of column tiles
+      jsr LoadColumnTiles               ; load a new set of column tiles
 
     InitAttrBlockLoad:
-      lda #$03                ; is the column index a multiple of 4?
+      lda #$03                          ; is the column index a multiple of 4?
       bit SourceColIndex
       bne :+
-          jsr LoadAttributeBlocks  ; if yes, load a new set of attribute block
+          jsr LoadAttributeBlocks       ; if yes, load a new set of attribute block
 :
-      lda XScroll                 ; increment XScroll by 8 (to load next column on next iteration)
+      lda XScroll                       ; increment XScroll by 8 (to load next column on next iteration)
       clc
       adc #8
       sta XScroll
 
-      inc SourceColIndex          ; increment source column index
+      inc SourceColIndex                ; increment source column index
 
-      lda SourceColIndex          ; have all 32 initial columns been loaded?
+      lda SourceColIndex                ; have all 32 initial columns been loaded?
       cmp #32
-  bne InitNameTableLoop       ; if no, perform another iteration
+  bne InitNameTableLoop                 ; if no, perform another iteration
 
   ; lda #0
   ; sta XScroll
 
-  lda #0                      ; revert CurNameTable back to 0
+  lda #0                                ; revert CurNameTable back to 0
   sta CurrNameTable
 
 EnableRendering:
-  lda #%10010100              ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
+  lda #%10010100                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
   sta PPU_CTRL
-  lda #$00                    ; disable scroll in X and Y
-  sta PPU_SCROLL              ; X
-  sta PPU_SCROLL              ; Y
-  lda #%00011110              ; set PPU_MASK bits to show background
+  lda #$00                              ; disable scroll in X and Y
+  sta PPU_SCROLL                        ; X
+  sta PPU_SCROLL                        ; Y
+  lda #%00011110                        ; set PPU_MASK bits to show background
   sta PPU_MASK
 
-LoopForever:                  ; loop forever at end of program
+LoopForever:                            ; loop forever at end of program
   jmp LoopForever
 
 ;--------------------------------------------------------
@@ -314,23 +314,23 @@ LoopForever:                  ; loop forever at end of program
 ;-------------------------------------------------------- 
 
 NMI:
-  inc Frame                   ; increment Frame
+  inc Frame                             ; increment Frame
 
 OAMStartDMACopy:
-  lda #$02                    ; indicate that sprite data to be copied is at $02**
-  sta PPU_OAM_DMA             ; initiate DMA copy (indicating address above)
+  lda #$02                              ; indicate that sprite data to be copied is at $02**
+  sta PPU_OAM_DMA                       ; initiate DMA copy (indicating address above)
 
 NewColumnCheck:
-  lda #$07                    ; has the screen scrolled by 8 pixels/units?
+  lda #$07                              ; has the screen scrolled by 8 pixels/units?
   bit XScroll
-  bne :+                      ; if no, skip
-      jsr LoadColumnTiles       ; load a new set of column tiles
+  bne :+                                ; if no, skip
+      jsr LoadColumnTiles               ; load a new set of column tiles
 
-      lda SourceColIndex      ; else, increment source column index
+      lda SourceColIndex                ; else, increment source column index
       clc
       adc #1
-      and #$7F                ; ensure source column index <= 128
-      sta SourceColIndex      ; store source column index
+      and #$7F                          ; ensure source column index <= 128
+      sta SourceColIndex                ; store source column index
 :
 
 NewAttributeBlockCheck:
@@ -341,24 +341,24 @@ NewAttributeBlockCheck:
 :
 
 ScrollBackground:
-  inc XScroll                 ; increment horizontal scroll position
-  bne :+                      ; has the edge of the screen been reached?
-      lda CurrNameTable       ; if yes, swap current 'starting' NameTable index in RAM
+  inc XScroll                           ; increment horizontal scroll position
+  bne :+                                ; has the edge of the screen been reached?
+      lda CurrNameTable                 ; if yes, swap current 'starting' NameTable index in RAM
       eor #$01
       sta CurrNameTable
-: lda #%10010100              ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
-  ora CurrNameTable           ; set 'starting' NameTable
-  sta PPU_CTRL                ; set PPU_CTRL with configs described above
-  lda XScroll                 ; set PPU_SCROLL's X value to XScroll value
+: lda #%10010100                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
+  ora CurrNameTable                     ; set 'starting' NameTable
+  sta PPU_CTRL                          ; set PPU_CTRL with configs described above
+  lda XScroll                           ; set PPU_SCROLL's X value to XScroll value
   sta PPU_SCROLL
-  lda #$00                    ; set PPU_SCROLL's Y value to 0
+  lda #$00                              ; set PPU_SCROLL's Y value to 0
   sta PPU_SCROLL
 
 SetGameClock:
-  lda Frame                   ; check if 60 frames have been counted
+  lda Frame                             ; check if 60 frames have been counted
   cmp #60
-  bne SkipClock60Increment    ; if no, skip
-    inc Clock60               ; else, increment Clock60 and reset Frame to 0
+  bne SkipClock60Increment              ; if no, skip
+    inc Clock60                         ; else, increment Clock60 and reset Frame to 0
     lda #0
     sta Frame
 SkipClock60Increment:
@@ -394,10 +394,10 @@ AttributeData:
 
 SpriteData:
 ;      Y   tile#  attributes   X
-.byte $A6,  $60,  %00000000,  $70 ; $200   _______________
-.byte $A6,  $61,  %00000000,  $78 ; $204   \  o o o o o  /   <-- Ship (4 tiles)
-.byte $A6,  $62,  %00000000,  $80 ; $208    \___________/
-.byte $A6,  $63,  %00000000,  $88 ; $20C
+.byte $A6,  $60,  %00000000,  $70       ; $200   _______________
+.byte $A6,  $61,  %00000000,  $78       ; $204   \  o o o o o  /   <-- Ship (4 tiles)
+.byte $A6,  $62,  %00000000,  $80       ; $208    \___________/
+.byte $A6,  $63,  %00000000,  $88       ; $20C
 
 .segment "CHARS"
 .incbin "atlantico.chr"
