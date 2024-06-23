@@ -38,33 +38,6 @@ SourceAddr:           .res 2            ; [$10] address of source column/attribu
 .segment "CODE"
 
 .include "IncFiles/Procedures/load-palette.inc"
-
-.proc LoadNameTable0
-  lda #<NameTable0Data                  ; load lower byte of NameTable[0/1]Data address
-  sta BgPtr
-  lda #>NameTable0Data                  ; load upper byte of NameTable[0/1]Data address
-  sta BgPtr+1
-
-  PPU_SETADDR $2000                     ; set PPU address to $2000
-
-  LOOP_BACKGROUND_DATA                  ; load all nametable data
-
-  rts                                   ; else, return from subroutine
-.endproc
-
-.proc LoadNameTable1
-  lda #<NameTable1Data                  ; load lower byte of NameTable[0/1]Data address
-  sta BgPtr
-  lda #>NameTable1Data                  ; load upper byte of NameTable[0/1]Data address
-  sta BgPtr+1
-
-  PPU_SETADDR $2400                     ; set PPU address to $2000
-
-  LOOP_BACKGROUND_DATA                  ; load all nametable data
-
-  rts                                   ; else, return from subroutine
-.endproc
-
 .include "IncFiles/Procedures/load-sprites.inc"
 
 .proc ReadControllers
