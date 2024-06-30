@@ -63,7 +63,7 @@ Main:
   LOAD_INIT_NAMETABLE
 
 EnableRendering:
-  SET_PPU_SCROLL_ZERO #%10010000
+  SET_PPU_SCROLL_ZERO #%10010000        ; initialize PPU_SCROLL's X,Y values to 0
   lda #%00011110                        ; set PPU_MASK bits to show background
   sta PPU_MASK
 
@@ -105,7 +105,7 @@ NewAttributeBlockCheck:
 
   ; draw status bar
 SetStatusScrollToZero:
-  SET_PPU_SCROLL_ZERO #%10010000
+  SET_PPU_SCROLL_ZERO #%10010000        ; set PPU_SCROLL's X,Y values to 0 (to "freeze" status bar)
 
 PollSprite0HitReset:                    ; wait for Sprite0Hit to be reset to 0 (end of vblank)
   lda #$40
@@ -126,7 +126,7 @@ IncrementXScroll:
       eor #$01
       sta CurrNameTable
 :
-  SET_PPU_SCROLL_X #%10010000
+  SET_PPU_SCROLL_X #%10010000           ; set PPU_SCROLL's X value to XScroll value (and Y to 0)
 
 SetGameClock:
   lda Frame                             ; check if 60 frames have been counted
