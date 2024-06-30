@@ -67,8 +67,8 @@ EnableRendering:
   lda #%00011110                        ; set PPU_MASK bits to show background
   sta PPU_MASK
 
-LoopForever:                            ; loop forever at end of program
-  jmp LoopForever
+GameLoop:                               ; loop forever at end of program
+  jmp GameLoop
 
 ;--------------------------------------------------------
 ; NMI interrupt handler
