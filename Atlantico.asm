@@ -3,6 +3,7 @@
 .include "IncFiles/reset.inc"
 .include "IncFiles/utils.inc"
 .include "IncFiles/Macros/load-init-nametable.inc"
+.include "IncFiles/Macros/set-ppu-scroll-zero.inc"
 
 ;--------------------------------------------------------
 ; ROM-specific constants
@@ -61,11 +62,7 @@ Main:
   LOAD_INIT_NAMETABLE
 
 EnableRendering:
-  lda #%10010000                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table
-  sta PPU_CTRL
-  lda #$00                              ; disable scroll in X and Y
-  sta PPU_SCROLL                        ; X
-  sta PPU_SCROLL                        ; Y
+  SET_PPU_SCROLL_ZERO #%10010000
   lda #%00011110                        ; set PPU_MASK bits to show background
   sta PPU_MASK
 
@@ -107,11 +104,7 @@ NewAttributeBlockCheck:
 
   ; draw status bar
 SetStatusScrollToZero:
-  lda #%10010000                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table
-  sta PPU_CTRL
-  lda #0                                ; set PPU_SCROLL's X,Y values to 0 (to "freeze" status bar)
-  sta PPU_SCROLL
-  sta PPU_SCROLL
+  SET_PPU_SCROLL_ZERO #%10010000
 
 PollSprite0HitReset:                    ; wait for Sprite0Hit to be reset to 0 (end of vblank)
   lda #$40
