@@ -61,7 +61,7 @@ Main:
   LOAD_INIT_NAMETABLE
 
 EnableRendering:
-  lda #%10010100                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
+  lda #%10010000                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table
   sta PPU_CTRL
   lda #$00                              ; disable scroll in X and Y
   sta PPU_SCROLL                        ; X
@@ -107,7 +107,7 @@ NewAttributeBlockCheck:
 
   ; draw status bar
 SetStatusScrollToZero:
-  lda #%10010100                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
+  lda #%10010000                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table
   sta PPU_CTRL
   lda #0                                ; set PPU_SCROLL's X,Y values to 0 (to "freeze" status bar)
   sta PPU_SCROLL
@@ -131,7 +131,7 @@ IncrementXScroll:
       lda CurrNameTable                 ; if yes, swap current 'starting' NameTable index in RAM
       eor #$01
       sta CurrNameTable
-: lda #%10010100                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
+: lda #%10010000                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table
   ora CurrNameTable                     ; set 'starting' NameTable
   sta PPU_CTRL                          ; set PPU_CTRL with configs described above
   lda XScroll                           ; set PPU_SCROLL's X value to XScroll value
