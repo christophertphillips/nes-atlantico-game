@@ -87,6 +87,7 @@ NewColumnCheck:
   lda #$07                              ; has the screen scrolled by 8 pixels/units?
   bit XScroll
   bne :+                                ; if no, skip
+    LoadNewColumnTiles:
       jsr LoadColumnTiles               ; load a new set of column tiles
 
       lda SourceColIndex                ; else, increment source column index
@@ -100,6 +101,7 @@ NewAttributeBlockCheck:
   lda #$1F                              ; has the screen scrolled by 32 pixels/units?
   bit XScroll
   bne :+                                ; if no, skip
+    LoadNewAttributeBlocks:
       jsr LoadAttributeBlocks           ; else, load a new set of attribute blocks
 :
 
@@ -122,8 +124,10 @@ PollSprite0Hit:                         ; wait for Sprite0Hit to be set to 1 (sp
   beq PollSprite0Hit
 
   ; draw rest of screen
+IncrementXScroll:
   inc XScroll                           ; increment horizontal scroll position
   bne :+                                ; has the edge of the screen been reached?
+    SwapNameTable:
       lda CurrNameTable                 ; if yes, swap current 'starting' NameTable index in RAM
       eor #$01
       sta CurrNameTable
