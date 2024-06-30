@@ -103,7 +103,25 @@ NewAttributeBlockCheck:
      jsr LoadAttributeBlocks
 :
 
-ScrollBackground:
+  ; draw status bar
+SetStatusScrollToZero:
+  lda #%10010100                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table, increment PPU_DATA writes by 32
+  sta PPU_CTRL
+  lda #0                                ; set PPU_SCROLL's X,Y values to 0 (to "freeze" status bar)
+  sta PPU_SCROLL
+  sta PPU_SCROLL
+
+PollSprite0HitReset:                    ; wait for Sprite0Hit to be reset to 0 (end of vblank)
+  lda #$40
+  bit PPU_STATUS
+  bne PollSprite0HitReset
+
+PollSprite0Hit:                         ; wait for Sprite0Hit to be set to 1 (sprite0 hit detected/status bar fully-drawn)
+  lda #$40
+  bit PPU_STATUS
+  beq PollSprite0Hit
+
+  ; draw rest of screen
   inc XScroll                           ; increment horizontal scroll position
   bne :+                                ; has the edge of the screen been reached?
       lda CurrNameTable                 ; if yes, swap current 'starting' NameTable index in RAM
@@ -157,6 +175,7 @@ AttributeData:
 
 SpriteData:
 ;      Y   tile#  attributes   X
+.byte $27,  $50,  %00100001,  $6
 .byte $A6,  $60,  %00000000,  $70       ; $200   _______________
 .byte $A6,  $61,  %00000000,  $78       ; $204   \  o o o o o  /   <-- Ship (4 tiles)
 .byte $A6,  $62,  %00000000,  $80       ; $208    \___________/
