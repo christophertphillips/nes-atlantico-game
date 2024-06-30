@@ -25,13 +25,14 @@ YPos:                 .res 2            ; [$03] player Y position, (8.8 fixed-po
 XVel:                 .res 1            ; [$05] player X speed in pixels per 256 frames (pixel/256frames)
 YVel:                 .res 1            ; [$06] player Y speed in pixels per 256 frames (pixel/256frames)
 Frame:                .res 1            ; [$07] # of frames
-Clock60:              .res 1            ; [$08] # of elapsed seconds
-BgPtr:                .res 2            ; [$09] pointer to the background address
-XScroll:              .res 1            ; [$0B] horizontal scroll position
-CurrNameTable:        .res 1            ; [$0C] store the current 'starting' NameTable (0 or 1)
-SourceColIndex:       .res 1            ; [$0D] index of source column
-DestAddr:             .res 2            ; [$0E] address of destination column in PPU memory map
-SourceAddr:           .res 2            ; [$10] address of source column/attribute in ROM
+IsNMIComplete:        .res 1            ; [$08] indciate when vblank nmi is done drawing
+Clock60:              .res 1            ; [$09] # of elapsed seconds
+BgPtr:                .res 2            ; [$0A] pointer to the background address
+XScroll:              .res 1            ; [$0C] horizontal scroll position
+CurrNameTable:        .res 1            ; [$0D] store the current 'starting' NameTable (0 or 1)
+SourceColIndex:       .res 1            ; [$0E] index of source column
+DestAddr:             .res 2            ; [$0F] address of destination column in PPU memory map
+SourceAddr:           .res 2            ; [$11] address of source column/attribute in ROM
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
@@ -49,8 +50,9 @@ Reset:
   INIT_NES
 
 InitVariables:
-  lda #0                                ; set frame, clock counters to 0
+  lda #0                                ; set frame, IsNMIComplete, clock counters to 0
   sta Frame
+  sta IsNMIComplete
   sta Clock60
   sta XScroll                           ; initialize horizontal scroll position to 0
   ;sta CurrNameTable                    ; initialize the 'starting' NameTable
