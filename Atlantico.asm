@@ -97,10 +97,10 @@ NewColumnCheck:
 :
 
 NewAttributeBlockCheck:
- lda #$1F
- bit XScroll
- bne :+
-     jsr LoadAttributeBlocks
+  lda #$1F                              ; has the screen scrolled by 32 pixels/units?
+  bit XScroll
+  bne :+                                ; if no, skip
+      jsr LoadAttributeBlocks           ; else, load a new set of attribute blocks
 :
 
   ; draw status bar
