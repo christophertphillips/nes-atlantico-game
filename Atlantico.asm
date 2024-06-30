@@ -4,6 +4,7 @@
 .include "IncFiles/utils.inc"
 .include "IncFiles/Macros/load-init-nametable.inc"
 .include "IncFiles/Macros/set-ppu-scroll-zero.inc"
+.include "IncFiles/Macros/set-ppu-scroll-x.inc"
 
 ;--------------------------------------------------------
 ; ROM-specific constants
@@ -124,13 +125,8 @@ IncrementXScroll:
       lda CurrNameTable                 ; if yes, swap current 'starting' NameTable index in RAM
       eor #$01
       sta CurrNameTable
-: lda #%10010000                        ; enable NMI interrupts from PPU, set background to use 2nd pattern table
-  ora CurrNameTable                     ; set 'starting' NameTable
-  sta PPU_CTRL                          ; set PPU_CTRL with configs described above
-  lda XScroll                           ; set PPU_SCROLL's X value to XScroll value
-  sta PPU_SCROLL
-  lda #$00                              ; set PPU_SCROLL's Y value to 0
-  sta PPU_SCROLL
+:
+  SET_PPU_SCROLL_X #%10010000
 
 SetGameClock:
   lda Frame                             ; check if 60 frames have been counted
