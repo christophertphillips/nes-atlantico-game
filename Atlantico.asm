@@ -69,8 +69,15 @@ EnableRendering:
   lda #%00011110                        ; set PPU_MASK bits to show background
   sta PPU_MASK
 
-GameLoop:                               ; loop forever at end of program
-  jmp GameLoop
+  ; game logic loop
+GameLoop:
+PollIsNMIComplete:                      ; wait for IsNMIComplete to be set (=1)
+      lda IsNMIComplete
+      beq PollIsNMIComplete
+ResetIsNMIComplete:
+  lda #0                                ; reset IsNMIComplete flag
+  sta IsNMIComplete
+  jmp GameLoop                          ; return to top of GameLoop
 
 ;--------------------------------------------------------
 ; NMI interrupt handler
@@ -138,6 +145,10 @@ SetGameClock:
     lda #0
     sta Frame
 SkipClock60Increment:
+
+SetNMIComplete:
+  lda #1                                ; set IsNMIComplete flag
+  sta IsNMIComplete
 
   rti
 
