@@ -84,6 +84,12 @@ ResetIsNMIComplete:
 ;-------------------------------------------------------- 
 
 NMI:
+  pha                                   ; push A,X,Y registers to the stack
+  txa
+  pha
+  tya
+  pha
+
   inc Frame                             ; increment Frame
 
 OAMStartDMACopy:
@@ -149,6 +155,12 @@ SkipClock60Increment:
 SetNMIComplete:
   lda #1                                ; set IsNMIComplete flag
   sta IsNMIComplete
+
+  pla                                   ; pull A,X,Y registers from the stack
+  tay
+  pla
+  tax
+  pla
 
   rti
 
