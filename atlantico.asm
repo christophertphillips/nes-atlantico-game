@@ -180,10 +180,10 @@ PaletteData:
 .byte $1C,$0F,$2D,$10, $1C,$0F,$20,$27, $1C,$2D,$38,$18, $1C,$0F,$1A,$32 ; Sprite palette
 
 BackgroundData:
-.include "backgrounddata.inc"
+.include "IncFiles/Data/backgrounddata.inc"
 
 AttributeData:
-.include "attributedata.inc"
+.include "IncFiles/Data/attributedata.inc"
 
 SpriteData:
 ;      Y   tile#  attributes   X
