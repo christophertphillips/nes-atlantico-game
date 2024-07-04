@@ -179,12 +179,6 @@ PaletteData:
 .byte $1C,$0F,$22,$1C, $1C,$37,$3D,$0F, $1C,$37,$3D,$30, $1C,$0F,$3D,$30 ; Background palette
 .byte $1C,$0F,$2D,$10, $1C,$0F,$20,$27, $1C,$2D,$38,$18, $1C,$0F,$1A,$32 ; Sprite palette
 
-NameTable0Data:
-.incbin "nametable0.nam"
-
-NameTable1Data:
-.incbin "nametable1.nam"
-
 BackgroundData:
 .include "backgrounddata.inc"
 
