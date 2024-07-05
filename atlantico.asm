@@ -5,6 +5,7 @@
 .include "IncFiles/Macros/load-init-nametable.inc"
 .include "IncFiles/Macros/set-ppu-scroll-zero.inc"
 .include "IncFiles/Macros/set-ppu-scroll-x.inc"
+.include "IncFiles/Macros/stack-ops.inc"
 
 ;--------------------------------------------------------
 ; ROM-specific constants
@@ -84,11 +85,7 @@ ResetIsNMIComplete:
 ;-------------------------------------------------------- 
 
 NMI:
-  pha                                   ; push A,X,Y registers to the stack
-  txa
-  pha
-  tya
-  pha
+  STACK_PUSH_ALL                        ; push A,X,Y registers to stack
 
   inc Frame                             ; increment Frame
 
@@ -156,11 +153,7 @@ SetNMIComplete:
   lda #1                                ; set IsNMIComplete flag
   sta IsNMIComplete
 
-  pla                                   ; pull A,X,Y registers from the stack
-  tay
-  pla
-  tax
-  pla
+  STACK_PULL_ALL                        ; pull A,X,Y registers from stack
 
   rti
 
