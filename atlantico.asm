@@ -6,6 +6,8 @@
 .include "IncFiles/Macros/set-ppu-scroll-zero.inc"
 .include "IncFiles/Macros/set-ppu-scroll-x.inc"
 .include "IncFiles/Macros/stack-ops.inc"
+.include "IncFiles/Structs/actor.inc"
+.include "IncFiles/Enums/actor-type.inc"
 
 ;--------------------------------------------------------
 ; ROM-specific constants
@@ -34,6 +36,7 @@ CurrNameTable:        .res 1            ; [$0D] store the current 'starting' Nam
 SourceColIndex:       .res 1            ; [$0E] index of source column
 DestAddr:             .res 2            ; [$0F] address of destination column in PPU memory map
 SourceAddr:           .res 2            ; [$11] address of source column/attribute in ROM
+ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; [$13] array of actors
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
