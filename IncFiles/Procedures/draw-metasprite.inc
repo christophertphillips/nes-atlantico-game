@@ -6,6 +6,9 @@
     ; DrawMetaSprite_TotalTiles,
     ; (OAMRAMIndex)
 
+  txa
+  pha
+
   ldx #0
   ldy OAMRAMIndex
 SpriteLoop:
@@ -34,6 +37,9 @@ SpriteLoop:
   bne SpriteLoop
 
   sty OAMRAMIndex
+
+  pla
+  tax
 
   rts
 .endproc
