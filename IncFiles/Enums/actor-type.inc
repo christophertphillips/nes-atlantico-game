@@ -1,5 +1,6 @@
 .enum ActorType
   NULL
+  SPRITE0
   PLAYER
   SUBMARINE
   AIRPLANE
