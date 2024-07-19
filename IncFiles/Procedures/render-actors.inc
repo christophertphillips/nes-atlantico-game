@@ -63,6 +63,26 @@
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
   :
+  cmp #ActorType::MISSILE               ; is the actor a submarine?
+    bne :+                              ; if no, skip; else, proceed
+        lda ActorsArray+Actor::XPos,X   ; store metasprite XPos of sprite in DrawSprite args
+        sta DrawMetaSprite_XPos
+
+        lda ActorsArray+Actor::YPos,X   ; store metasprite YPos in DrawSprite args
+        sta DrawMetaSprite_YPos
+
+        lda #$50                        ; store metasprite TileNum in DrawSprite args
+        sta DrawMetaSprite_TileNum
+
+        lda #$00                        ; store metasprite attributes in DrawSprite args
+        sta DrawMetaSprite_Attribs
+
+        lda #1                          ; store metasprite's # of tiles in DrawSprite args
+        sta DrawMetaSprite_TotalTiles
+
+        jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
+  :
+
 
   NextActor:
     txa                                 ; increment loop index to refer to next actor (using actor size)
