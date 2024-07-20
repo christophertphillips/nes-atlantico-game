@@ -59,7 +59,6 @@ ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; [$19] array of actors
 .segment "CODE"
 
 .include "IncFiles/Procedures/load-palette.inc"
-.include "IncFiles/Procedures/load-sprites.inc"
 .include "IncFiles/Procedures/read-controllers.inc"
 .include "IncFiles/Procedures/load-column-tiles.inc"
 .include "IncFiles/Procedures/load-attribute-blocks.inc"
