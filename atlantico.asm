@@ -92,6 +92,8 @@ EnableRendering:
 
   ; game logic loop
 GameLoop:
+  jsr RenderActors                      ; render all actors in ActorsArray
+
 PollIsNMIComplete:                      ; wait for IsNMIComplete to be set (=1)
       lda IsNMIComplete
       beq PollIsNMIComplete
