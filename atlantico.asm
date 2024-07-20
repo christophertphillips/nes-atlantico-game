@@ -78,10 +78,36 @@ InitVariables:
   sta XScroll                           ; initialize horizontal scroll position to 0
   ;sta CurrNameTable                    ; initialize the 'starting' NameTable
   sta SourceColIndex                    ; initialize the source column index to 0
+  sta OAMRAMIndex                       ; initialize the OAM RAM index to 0
 
 Main:
   jsr LoadPalette                       ; set palette data
-  jsr LoadSprites                       ; set sprites (from tiles)
+
+AddSprite0:
+  lda #ActorType::SPRITE0
+  sta AddActor_Type
+  lda #$6
+  sta AddActor_XPos
+  lda #$27
+  sta AddActor_YPos
+  lda #0
+  sta AddActor_XVel
+  lda #0
+  sta AddActor_YVel
+  jsr AddActor
+
+AddPlayer:
+  lda #ActorType::PLAYER
+  sta AddActor_Type
+  lda #$70
+  sta AddActor_XPos
+  lda #$A6
+  sta AddActor_YPos
+  lda #0
+  sta AddActor_XVel
+  lda #0
+  sta AddActor_YVel
+  jsr AddActor
 
   LOAD_INIT_NAMETABLE
 

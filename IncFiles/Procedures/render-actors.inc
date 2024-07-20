@@ -1,6 +1,6 @@
 .proc RenderActors
   ldx #0                                ; index to reference actors
-  lda #20
+  lda #0                                ; reset OAM RAM index to zero (i.e. $0200 in RAM)
   sta OAMRAMIndex
 
   ActorsLoop:
