@@ -63,6 +63,9 @@ ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; [$19] array of actors
 .include "IncFiles/Procedures/read-controllers.inc"
 .include "IncFiles/Procedures/load-column-tiles.inc"
 .include "IncFiles/Procedures/load-attribute-blocks.inc"
+.include "IncFiles/Procedures/draw-metasprite.inc"
+.include "IncFiles/Procedures/render-actors.inc"
+.include "IncFiles/Procedures/add-actor.inc"
 
 Reset:
   INIT_NES
