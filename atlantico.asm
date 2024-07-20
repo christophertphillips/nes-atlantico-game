@@ -225,14 +225,6 @@ BackgroundData:
 AttributeData:
 .include "IncFiles/Data/attributedata.inc"
 
-SpriteData:
-;      Y   tile#  attributes   X
-.byte $27,  $50,  %00100001,  $6
-.byte $A6,  $60,  %00000000,  $70       ; $200   _______________
-.byte $A6,  $61,  %00000000,  $78       ; $204   \  o o o o o  /   <-- Ship (4 tiles)
-.byte $A6,  $62,  %00000000,  $80       ; $208    \___________/
-.byte $A6,  $63,  %00000000,  $88       ; $20C
-
 .segment "CHARS"
 .incbin "atlantico.chr"
 
