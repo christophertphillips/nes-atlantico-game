@@ -6,6 +6,7 @@
 .include "IncFiles/Macros/set-ppu-scroll-zero.inc"
 .include "IncFiles/Macros/set-ppu-scroll-x.inc"
 .include "IncFiles/Macros/stack-ops.inc"
+.include "IncFiles/Macros/set-add-actor-args.inc"
 .include "IncFiles/Structs/actor.inc"
 .include "IncFiles/Enums/actor-type.inc"
 
@@ -83,29 +84,11 @@ Main:
   jsr LoadPalette                       ; set palette data
 
 AddSprite0:
-  lda #ActorType::SPRITE0
-  sta AddActor_Type
-  lda #$6
-  sta AddActor_XPos
-  lda #$27
-  sta AddActor_YPos
-  lda #0
-  sta AddActor_XVel
-  lda #0
-  sta AddActor_YVel
+  SET_ADD_ACTOR_ARGS #ActorType::SPRITE0, #$6, #$27, #$0, #$0 ; add Sprite0 to actors
   jsr AddActor
 
 AddPlayer:
-  lda #ActorType::PLAYER
-  sta AddActor_Type
-  lda #$70
-  sta AddActor_XPos
-  lda #$A6
-  sta AddActor_YPos
-  lda #0
-  sta AddActor_XVel
-  lda #0
-  sta AddActor_YVel
+  SET_ADD_ACTOR_ARGS #ActorType::PLAYER, #$70, #$A6, #$0, #$0 ; add Player to actors
   jsr AddActor
 
   LOAD_INIT_NAMETABLE
