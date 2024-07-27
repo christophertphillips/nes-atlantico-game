@@ -7,6 +7,7 @@
 .include "IncFiles/Macros/set-ppu-scroll-x.inc"
 .include "IncFiles/Macros/stack-ops.inc"
 .include "IncFiles/Macros/set-add-actor-args.inc"
+.include "IncFiles/Macros/set-draw-meta-sprite-args.inc"
 .include "IncFiles/Structs/actor.inc"
 .include "IncFiles/Enums/actor-type.inc"
 

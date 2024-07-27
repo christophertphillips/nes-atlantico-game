@@ -9,20 +9,7 @@ ActorsLoop:
     cmp #ActorType::SPRITE0             ; is the actor sprite0?
     bne :+                              ; if no, skip; else, proceed
       RenderSprite0:
-        lda ActorsArray+Actor::XPos,X   ; store metasprite XPos of sprite in DrawSprite args
-        sta DrawMetaSprite_XPos
-
-        lda ActorsArray+Actor::YPos,X   ; store metasprite YPos in DrawSprite args
-        sta DrawMetaSprite_YPos
-
-        lda #$50                        ; store metasprite TileNum in DrawSprite args
-        sta DrawMetaSprite_TileNum
-
-        lda #$20                        ; store metasprite attributes in DrawSprite args
-        sta DrawMetaSprite_Attribs
-
-        lda #1                          ; store metasprite's # of tiles in DrawSprite args
-        sta DrawMetaSprite_TotalTiles
+        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$50, #$20, #1
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
         jmp NextActor                   ; go to next actor
@@ -30,20 +17,7 @@ ActorsLoop:
     cmp #ActorType::PLAYER              ; is the actor a player?
     bne :+                              ; if no, skip; else, proceed
       RenderPlayer:
-        lda ActorsArray+Actor::XPos,X   ; store metasprite XPos of sprite in DrawSprite args
-        sta DrawMetaSprite_XPos
-
-        lda ActorsArray+Actor::YPos,X   ; store metasprite YPos in DrawSprite args
-        sta DrawMetaSprite_YPos
-
-        lda #$60                        ; store metasprite TileNum in DrawSprite args
-        sta DrawMetaSprite_TileNum
-
-        lda #$00                        ; store metasprite attributes in DrawSprite args
-        sta DrawMetaSprite_Attribs
-
-        lda #4                          ; store metasprite's # of tiles in DrawSprite args
-        sta DrawMetaSprite_TotalTiles
+        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$60, #$00, #4
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
         jmp NextActor                   ; go to next actor
@@ -51,20 +25,7 @@ ActorsLoop:
   cmp #ActorType::SUBMARINE             ; is the actor a missile?
     bne :+                              ; if no, skip; else, proceed
       RenderSubmarine:
-        lda ActorsArray+Actor::XPos,X   ; store metasprite XPos of sprite in DrawSprite args
-        sta DrawMetaSprite_XPos
-
-        lda ActorsArray+Actor::YPos,X   ; store metasprite YPos in DrawSprite args
-        sta DrawMetaSprite_YPos
-
-        lda #$00                        ; store metasprite TileNum in DrawSprite args
-        sta DrawMetaSprite_TileNum
-
-        lda #$00                        ; store metasprite attributes in DrawSprite args
-        sta DrawMetaSprite_Attribs
-
-        lda #4                          ; store metasprite's # of tiles in DrawSprite args
-        sta DrawMetaSprite_TotalTiles
+        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$00, #$00, #4
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
         jmp NextActor                   ; go to next actor
@@ -72,25 +33,11 @@ ActorsLoop:
   cmp #ActorType::MISSILE               ; is the actor a submarine?
     bne :+                              ; if no, skip; else, proceed
       RenderMissile:
-        lda ActorsArray+Actor::XPos,X   ; store metasprite XPos of sprite in DrawSprite args
-        sta DrawMetaSprite_XPos
-
-        lda ActorsArray+Actor::YPos,X   ; store metasprite YPos in DrawSprite args
-        sta DrawMetaSprite_YPos
-
-        lda #$50                        ; store metasprite TileNum in DrawSprite args
-        sta DrawMetaSprite_TileNum
-
-        lda #$00                        ; store metasprite attributes in DrawSprite args
-        sta DrawMetaSprite_Attribs
-
-        lda #1                          ; store metasprite's # of tiles in DrawSprite args
-        sta DrawMetaSprite_TotalTiles
+        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$50, #$00, #1
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
         jmp NextActor                   ; go to next actor
   :
-
 
 NextActor:
     txa                                 ; increment loop index to refer to next actor (using actor size)
