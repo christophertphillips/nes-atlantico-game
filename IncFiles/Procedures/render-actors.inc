@@ -3,11 +3,12 @@
   lda #0                                ; reset OAM RAM index to zero (i.e. $0200 in RAM)
   sta OAMRAMIndex
 
-  ActorsLoop:
+ActorsLoop:
     lda ActorsArray+Actor::Type,X       ; load type of currently-referenced actor
 
     cmp #ActorType::SPRITE0             ; is the actor sprite0?
     bne :+                              ; if no, skip; else, proceed
+      RenderSprite0:
         lda ActorsArray+Actor::XPos,X   ; store metasprite XPos of sprite in DrawSprite args
         sta DrawMetaSprite_XPos
 
@@ -28,6 +29,7 @@
   :
     cmp #ActorType::PLAYER              ; is the actor a player?
     bne :+                              ; if no, skip; else, proceed
+      RenderPlayer:
         lda ActorsArray+Actor::XPos,X   ; store metasprite XPos of sprite in DrawSprite args
         sta DrawMetaSprite_XPos
 
@@ -48,6 +50,7 @@
   :
   cmp #ActorType::SUBMARINE             ; is the actor a missile?
     bne :+                              ; if no, skip; else, proceed
+      RenderSubmarine:
         lda ActorsArray+Actor::XPos,X   ; store metasprite XPos of sprite in DrawSprite args
         sta DrawMetaSprite_XPos
 
@@ -68,6 +71,7 @@
   :
   cmp #ActorType::MISSILE               ; is the actor a submarine?
     bne :+                              ; if no, skip; else, proceed
+      RenderMissile:
         lda ActorsArray+Actor::XPos,X   ; store metasprite XPos of sprite in DrawSprite args
         sta DrawMetaSprite_XPos
 
@@ -88,7 +92,7 @@
   :
 
 
-  NextActor:
+NextActor:
     txa                                 ; increment loop index to refer to next actor (using actor size)
     clc
     adc #.sizeof(Actor)
