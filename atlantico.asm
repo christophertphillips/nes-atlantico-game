@@ -40,19 +40,19 @@ DestAddr:             .res 2            ; [$0F] address of destination column in
 SourceAddr:           .res 2            ; [$11] address of source column/attribute in ROM
 OAMRAMIndex:          .res 1            ; [$13] index of OAM RAM data
 
-AddActor_Type:        .res 1
-AddActor_XPos:        .res 1
-AddActor_YPos:        .res 1
-AddActor_XVel:        .res 1
-AddActor_YVel:        .res 1
+AddActor_Type:        .res 1            ; [$14] AddActor param (type of actor)
+AddActor_XPos:        .res 1            ; [$15] AddActor param (X position of actor)
+AddActor_YPos:        .res 1            ; [$16] AddActor param (Y position of actor)
+AddActor_XVel:        .res 1            ; [$17] AddActor param (X velocity of actor)
+AddActor_YVel:        .res 1            ; [$18] AddActor param (Y velocity of actor)
 
-DrawMetaSprite_XPos:      .res 1        ; [$14] DrawMetaSprite param (X position of metasprite)
-DrawMetaSprite_YPos:      .res 1        ; [$15] DrawMetaSprite param (Y position of metasprite)
-DrawMetaSprite_TileNum:   .res 1        ; [$16] DrawMetaSprite param (starting tile number of metasprite)
-DrawMetaSprite_Attribs:   .res 1        ; [$17] DrawMetaSprite param (attributes of metasprite)
-DrawMetaSprite_TotalTiles:.res 1        ; [$18] DrawMetaSprite param (total # of tiles comprising metasprite)
+DrawMetaSprite_XPos:      .res 1        ; [$19] DrawMetaSprite param (X position of metasprite)
+DrawMetaSprite_YPos:      .res 1        ; [$1A] DrawMetaSprite param (Y position of metasprite)
+DrawMetaSprite_TileNum:   .res 1        ; [$1B] DrawMetaSprite param (starting tile number of metasprite)
+DrawMetaSprite_Attribs:   .res 1        ; [$1C] DrawMetaSprite param (attributes of metasprite)
+DrawMetaSprite_TotalTiles:.res 1        ; [$1D] DrawMetaSprite param (total # of tiles comprising metasprite)
 
-ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; [$19] array of actors
+ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; [$1E] array of actors
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
