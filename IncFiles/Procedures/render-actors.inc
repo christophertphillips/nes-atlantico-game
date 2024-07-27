@@ -24,6 +24,7 @@
         sta DrawMetaSprite_TotalTiles
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
+        jmp NextActor                   ; go to next actor
   :
     cmp #ActorType::PLAYER              ; is the actor a player?
     bne :+                              ; if no, skip; else, proceed
@@ -43,6 +44,7 @@
         sta DrawMetaSprite_TotalTiles
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
+        jmp NextActor                   ; go to next actor
   :
   cmp #ActorType::SUBMARINE             ; is the actor a missile?
     bne :+                              ; if no, skip; else, proceed
@@ -62,6 +64,7 @@
         sta DrawMetaSprite_TotalTiles
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
+        jmp NextActor                   ; go to next actor
   :
   cmp #ActorType::MISSILE               ; is the actor a submarine?
     bne :+                              ; if no, skip; else, proceed
@@ -81,6 +84,7 @@
         sta DrawMetaSprite_TotalTiles
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
+        jmp NextActor                   ; go to next actor
   :
 
 
@@ -90,7 +94,9 @@
     adc #.sizeof(Actor)
     tax
     cmp #MAX_ACTORS * .sizeof(Actor)    ; have all actors been rendered?
-    bne ActorsLoop                      ; if no, repeat loop to render more actors
+    beq :+
+        jmp ActorsLoop                  ; if no, repeat loop to render more actors
+    :                                   ; (jmp is used here bc the destination is too far away for branching)
 
     rts                                 ; else, return from subroutine
 .endproc
