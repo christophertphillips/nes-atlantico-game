@@ -25,34 +25,35 @@ BRAKE     = 2                           ; Movement deceleration in 1/256 px/fram
 
 .segment "ZEROPAGE"
 Buttons:              .res 1            ; [$00] button state
-XPos:                 .res 2            ; [$01] player X position, (8.8 fixed-point math), (Xhi + Xlo/256) pixels
-YPos:                 .res 2            ; [$03] player Y position, (8.8 fixed-point math), (Yhi + Ylo/256) pixels
-XVel:                 .res 1            ; [$05] player X speed in pixels per 256 frames (pixel/256frames)
-YVel:                 .res 1            ; [$06] player Y speed in pixels per 256 frames (pixel/256frames)
-Frame:                .res 1            ; [$07] # of frames
-IsNMIComplete:        .res 1            ; [$08] indciate when vblank nmi is done drawing
-Clock60:              .res 1            ; [$09] # of elapsed seconds
-BgPtr:                .res 2            ; [$0A] pointer to the background address
-XScroll:              .res 1            ; [$0C] horizontal scroll position
-CurrNameTable:        .res 1            ; [$0D] store the current 'starting' NameTable (0 or 1)
-SourceColIndex:       .res 1            ; [$0E] index of source column
-DestAddr:             .res 2            ; [$0F] address of destination column in PPU memory map
-SourceAddr:           .res 2            ; [$11] address of source column/attribute in ROM
-OAMRAMIndex:          .res 1            ; [$13] index of OAM RAM data
+PrevButtons:          .res 1            ; [$01] previous button state
+XPos:                 .res 2            ; [$02] player X position, (8.8 fixed-point math), (Xhi + Xlo/256) pixels
+YPos:                 .res 2            ; [$04] player Y position, (8.8 fixed-point math), (Yhi + Ylo/256) pixels
+XVel:                 .res 1            ; [$06] player X speed in pixels per 256 frames (pixel/256frames)
+YVel:                 .res 1            ; [$07] player Y speed in pixels per 256 frames (pixel/256frames)
+Frame:                .res 1            ; [$08] # of frames
+IsNMIComplete:        .res 1            ; [$09] indciate when vblank nmi is done drawing
+Clock60:              .res 1            ; [$0A] # of elapsed seconds
+BgPtr:                .res 2            ; [$0B] pointer to the background address
+XScroll:              .res 1            ; [$0D] horizontal scroll position
+CurrNameTable:        .res 1            ; [$0E] store the current 'starting' NameTable (0 or 1)
+SourceColIndex:       .res 1            ; [$0F] index of source column
+DestAddr:             .res 2            ; [$10] address of destination column in PPU memory map
+SourceAddr:           .res 2            ; [$12] address of source column/attribute in ROM
+OAMRAMIndex:          .res 1            ; [$14] index of OAM RAM data
 
-AddActor_Type:        .res 1            ; [$14] AddActor param (type of actor)
-AddActor_XPos:        .res 1            ; [$15] AddActor param (X position of actor)
-AddActor_YPos:        .res 1            ; [$16] AddActor param (Y position of actor)
-AddActor_XVel:        .res 1            ; [$17] AddActor param (X velocity of actor)
-AddActor_YVel:        .res 1            ; [$18] AddActor param (Y velocity of actor)
+AddActor_Type:        .res 1            ; [$15] AddActor param (type of actor)
+AddActor_XPos:        .res 1            ; [$16] AddActor param (X position of actor)
+AddActor_YPos:        .res 1            ; [$17] AddActor param (Y position of actor)
+AddActor_XVel:        .res 1            ; [$18] AddActor param (X velocity of actor)
+AddActor_YVel:        .res 1            ; [$19] AddActor param (Y velocity of actor)
 
-DrawMetaSprite_XPos:      .res 1        ; [$19] DrawMetaSprite param (X position of metasprite)
-DrawMetaSprite_YPos:      .res 1        ; [$1A] DrawMetaSprite param (Y position of metasprite)
-DrawMetaSprite_TileNum:   .res 1        ; [$1B] DrawMetaSprite param (starting tile number of metasprite)
-DrawMetaSprite_Attribs:   .res 1        ; [$1C] DrawMetaSprite param (attributes of metasprite)
-DrawMetaSprite_TotalTiles:.res 1        ; [$1D] DrawMetaSprite param (total # of tiles comprising metasprite)
+DrawMetaSprite_XPos:      .res 1        ; [$1A] DrawMetaSprite param (X position of metasprite)
+DrawMetaSprite_YPos:      .res 1        ; [$1B] DrawMetaSprite param (Y position of metasprite)
+DrawMetaSprite_TileNum:   .res 1        ; [$1C] DrawMetaSprite param (starting tile number of metasprite)
+DrawMetaSprite_Attribs:   .res 1        ; [$1D] DrawMetaSprite param (attributes of metasprite)
+DrawMetaSprite_TotalTiles:.res 1        ; [$1E] DrawMetaSprite param (total # of tiles comprising metasprite)
 
-ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; [$1E] array of actors
+ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; [$1F] array of actors
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
@@ -74,6 +75,7 @@ Reset:
 
 InitVariables:
   lda #0                                ; set frame, IsNMIComplete, clock counters to 0
+  sta PrevButtons
   sta Frame
   sta IsNMIComplete
   sta Clock60
