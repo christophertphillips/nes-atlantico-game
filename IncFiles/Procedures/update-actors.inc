@@ -19,6 +19,10 @@ ActorsLoop:
   cmp #ActorType::MISSILE             ; is the actor a submarine?
   bne :+                              ; if no, skip; else, proceed
     UpdateMissile:
+      lda ActorsArray+Actor::YVel,X   ; load missile's YVel
+      clc
+      adc ActorsArray+Actor::YPos,X   ; add it to missile's YPos
+      sta ActorsArray+Actor::YPos,X   ; store new missile YPos
   :
 
 NextActor:

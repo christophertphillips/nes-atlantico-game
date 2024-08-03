@@ -107,7 +107,7 @@ GameLoop:
 CheckUpButton:
   CHECK_BUTTON #BUTTON_A                ; has the A button been pressed?
   beq :+                                ; if no, skip
-      SET_ADD_ACTOR_ARGS #ActorType::MISSILE, #$70, #$A6, #$0, #$0 ; else, add Missile to actors
+      SET_ADD_ACTOR_ARGS #ActorType::MISSILE, #$70, #$A6, #$0, #$FF ; else, add Missile to actors
       jsr AddActor
   :
 
