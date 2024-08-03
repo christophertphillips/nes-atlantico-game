@@ -75,6 +75,7 @@ Reset:
 
 InitVariables:
   lda #0                                ; set frame, IsNMIComplete, clock counters to 0
+  sta Buttons
   sta PrevButtons
   sta Frame
   sta IsNMIComplete
@@ -104,13 +105,20 @@ EnableRendering:
 
   ; game logic loop
 GameLoop:
+  lda Buttons                           ; store previously-pressed buttons
+  sta PrevButtons
+
   jsr ReadControllers                   ; read controller inputs
 
 CheckUpButton:
   CHECK_BUTTON #BUTTON_A                ; has the A button been pressed?
   beq :+                                ; if no, skip
-      SET_ADD_ACTOR_ARGS #ActorType::MISSILE, #$70, #$A6, #$0, #$FF ; else, add Missile to actors
-      jsr AddActor
+      lda PrevButtons                   ; else, was the A button pressed previously?
+      and #BUTTON_A
+      cmp #BUTTON_A
+      beq :+                            ; if yes, skip
+          SET_ADD_ACTOR_ARGS #ActorType::MISSILE, #$70, #$A6, #$0, #$FF ; else, add Missile to actors
+          jsr AddActor
   :
 
   jsr UpdateActors                      ; update all actors in ActorsArray
