@@ -40,20 +40,21 @@ SourceColIndex:       .res 1            ; [$0F] index of source column
 DestAddr:             .res 2            ; [$10] address of destination column in PPU memory map
 SourceAddr:           .res 2            ; [$12] address of source column/attribute in ROM
 OAMRAMIndex:          .res 1            ; [$14] index of OAM RAM data
+PrevOAMRAMIndex:      .res 1            ; [$15] index of previous OAM RAM data
 
-AddActor_Type:        .res 1            ; [$15] AddActor param (type of actor)
-AddActor_XPos:        .res 1            ; [$16] AddActor param (X position of actor)
-AddActor_YPos:        .res 1            ; [$17] AddActor param (Y position of actor)
-AddActor_XVel:        .res 1            ; [$18] AddActor param (X velocity of actor)
-AddActor_YVel:        .res 1            ; [$19] AddActor param (Y velocity of actor)
+AddActor_Type:        .res 1            ; [$16] AddActor param (type of actor)
+AddActor_XPos:        .res 1            ; [$17] AddActor param (X position of actor)
+AddActor_YPos:        .res 1            ; [$18] AddActor param (Y position of actor)
+AddActor_XVel:        .res 1            ; [$19] AddActor param (X velocity of actor)
+AddActor_YVel:        .res 1            ; [$1A] AddActor param (Y velocity of actor)
 
-DrawMetaSprite_XPos:      .res 1        ; [$1A] DrawMetaSprite param (X position of metasprite)
-DrawMetaSprite_YPos:      .res 1        ; [$1B] DrawMetaSprite param (Y position of metasprite)
-DrawMetaSprite_TileNum:   .res 1        ; [$1C] DrawMetaSprite param (starting tile number of metasprite)
-DrawMetaSprite_Attribs:   .res 1        ; [$1D] DrawMetaSprite param (attributes of metasprite)
-DrawMetaSprite_TotalTiles:.res 1        ; [$1E] DrawMetaSprite param (total # of tiles comprising metasprite)
+DrawMetaSprite_XPos:      .res 1        ; [$1B] DrawMetaSprite param (X position of metasprite)
+DrawMetaSprite_YPos:      .res 1        ; [$1C] DrawMetaSprite param (Y position of metasprite)
+DrawMetaSprite_TileNum:   .res 1        ; [$1D] DrawMetaSprite param (starting tile number of metasprite)
+DrawMetaSprite_Attribs:   .res 1        ; [$1E] DrawMetaSprite param (attributes of metasprite)
+DrawMetaSprite_TotalTiles:.res 1        ; [$1F] DrawMetaSprite param (total # of tiles comprising metasprite)
 
-ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; [$1F] array of actors
+ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; [$20] array of actors
 
 ;--------------------------------------------------------
 ; PRG-ROM (at $8000)
@@ -84,6 +85,7 @@ InitVariables:
   ;sta CurrNameTable                    ; initialize the 'starting' NameTable
   sta SourceColIndex                    ; initialize the source column index to 0
   sta OAMRAMIndex                       ; initialize the OAM RAM index to 0
+  sta PrevOAMRAMIndex
 
 Main:
   jsr LoadPalette                       ; set palette data
