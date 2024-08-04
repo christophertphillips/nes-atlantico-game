@@ -23,6 +23,10 @@ ActorsLoop:
       clc
       adc ActorsArray+Actor::YPos,X   ; add it to missile's YPos
       sta ActorsArray+Actor::YPos,X   ; store new missile YPos
+
+      bne :+                          ; has the missile reached the top of the screen?
+          lda #ActorType::NULL        ; if so, set actor type to NULL
+          sta ActorsArray+Actor::Type,X
   :
 
 NextActor:
