@@ -49,5 +49,27 @@ NextActor:
         jmp ActorsLoop                  ; if no, repeat loop to render more actors
     :                                   ; (jmp is used here bc the destination is too far away for branching)
 
+ClearStaleOAMRAM:
+  ldy OAMRAMIndex
+ClearStaleOAMRAMDataLoop:
+  cpy PrevOAMRAMIndex                   ; is there "stale" data in OAM RAM?
+  bcs :+                                ; if no, skip
+      lda #0                            ; else, zero out the stale data
+
+      sta $0200,Y                       ; (performed in 4-byte chunks, since each hardware sprite corresponds to 4 bytes of OAM RAM)
+      iny
+      sta $0200,Y
+      iny
+      sta $0200,Y
+      iny
+      sta $0200,Y
+      iny
+
+      jmp ClearStaleOAMRAMDataLoop
+    :
+
+    lda OAMRAMIndex                     ; store current OAM RAM index in previous OAM RAM index, for next render
+    sta PrevOAMRAMIndex
+
     rts                                 ; else, return from subroutine
 .endproc
