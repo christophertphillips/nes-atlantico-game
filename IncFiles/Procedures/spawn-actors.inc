@@ -11,5 +11,17 @@
       sta PrevSubmarineClock
   :
 
+  lda Clock60                           ; load timer value
+  sec                                   ; subtract timer value from previous airplane timer value
+  sbc PrevAirplaneClock
+  cmp #2                                ; have more than 3 seconds passed since the last airplane was spawned?
+  bne :+                                ; if no, skip
+    SpawnAirplane:                      ; else, spawn a airplane
+      SET_ADD_ACTOR_ARGS #ActorType::AIRPLANE, #232, #$30, #$FE, #$0
+      jsr AddActor
+      lda Clock60                       ; update airplane's timer value
+      sta PrevAirplaneClock
+  :
+
   rts
 .endproc
