@@ -15,6 +15,16 @@ ActorsLoop:
   cmp #ActorType::SUBMARINE             ; is the actor a missile?
   bne :+                              ; if no, skip; else, proceed
     UpdateSubmarine:
+      lda ActorsArray+Actor::XVel,X   ; load submarine's XVel
+      clc
+      adc ActorsArray+Actor::XPos,X   ; add it to submarien's XPos
+      sta ActorsArray+Actor::XPos,X   ; store new submarine XPos
+
+      bne :+                          ; has the submarine reached the left edge of the screen?
+          lda #ActorType::NULL        ; if so, set actor type to NULL
+          sta ActorsArray+Actor::Type,X
+
+      jmp NextActor
   :
   cmp #ActorType::MISSILE             ; is the actor a submarine?
   bne :+                              ; if no, skip; else, proceed
