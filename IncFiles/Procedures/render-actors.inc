@@ -30,6 +30,14 @@ ActorsLoop:
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
         jmp NextActor                   ; go to next actor
   :
+  cmp #ActorType::AIRPLANE               ; is the actor an airplane?
+    bne :+                              ; if no, skip; else, proceed
+      RenderAirplane:
+        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$10, #$03, #3
+
+        jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
+        jmp NextActor                   ; go to next actor
+  :
   cmp #ActorType::MISSILE               ; is the actor a submarine?
     bne :+                              ; if no, skip; else, proceed
       RenderMissile:
