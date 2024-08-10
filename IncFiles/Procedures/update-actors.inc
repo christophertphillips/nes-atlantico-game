@@ -26,6 +26,20 @@ ActorsLoop:
 
       jmp NextActor
   :
+  cmp #ActorType::AIRPLANE              ; is the actor an airplane?
+  bne :+                                ; if no, skip; else, proceed
+    UpdateAirplane:
+      lda ActorsArray+Actor::XVel,X     ; load airplane's XVel
+      clc
+      adc ActorsArray+Actor::XPos,X     ; add it to airplane's XPos
+      sta ActorsArray+Actor::XPos,X     ; store new airplane XPos
+
+      bne :+                            ; has the airplane reached the left edge of the screen?
+          lda #ActorType::NULL          ; if so, set actor type to NULL
+          sta ActorsArray+Actor::Type,X
+
+      jmp NextActor
+  :
   cmp #ActorType::MISSILE             ; is the actor a submarine?
   bne :+                              ; if no, skip; else, proceed
     UpdateMissile:
