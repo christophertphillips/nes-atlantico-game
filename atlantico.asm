@@ -71,6 +71,7 @@ ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; [$21] array of actors
 .include "IncFiles/Procedures/render-actors.inc"
 .include "IncFiles/Procedures/add-actor.inc"
 .include "IncFiles/Procedures/update-actors.inc"
+.include "IncFiles/Procedures/spawn-actors.inc"
 
 Reset:
   INIT_NES
@@ -126,6 +127,7 @@ CheckUpButton:
   :
 
   jsr UpdateActors                      ; update all actors in ActorsArray
+  jsr SpawnActors                       ; spawn new actors per conditions
   jsr RenderActors                      ; render all actors in ActorsArray
 
 PollIsNMIComplete:                      ; wait for IsNMIComplete to be set (=1)
