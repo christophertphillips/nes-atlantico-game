@@ -35,6 +35,7 @@ IsNMIComplete:        .res 1            ; indciate when vblank nmi is done drawi
 Clock60:              .res 1            ; # of elapsed seconds
 PrevSubmarineClock:   .res 1            ; seconds when previous submarine spawned
 PrevAirplaneClock:    .res 1            ; seconds when previous airplane spawned
+Seed:                 .res 2            ; seed for generating random bytes
 BgPtr:                .res 2            ; pointer to the background address
 XScroll:              .res 1            ; horizontal scroll position
 CurrNameTable:        .res 1            ; store the current 'starting' NameTable (0 or 1)
@@ -91,6 +92,11 @@ InitVariables:
   sta PrevOAMRAMIndex
   sta PrevSubmarineClock
   sta PrevAirplaneClock
+
+  lda #$12                              ; initialize seed (both bytes)
+  sta Seed+0
+  lda #$34
+  sta Seed+1
 
 Main:
   jsr LoadPalette                       ; set palette data
