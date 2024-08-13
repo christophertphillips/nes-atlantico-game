@@ -18,10 +18,6 @@
 .segment "ZEROPAGE"
 Buttons:              .res 1            ; button state
 PrevButtons:          .res 1            ; previous button state
-XPos:                 .res 2            ; player X position, (8.8 fixed-point math), (Xhi + Xlo/256) pixels
-YPos:                 .res 2            ; player Y position, (8.8 fixed-point math), (Yhi + Ylo/256) pixels
-XVel:                 .res 1            ; player X speed in pixels per 256 frames (pixel/256frames)
-YVel:                 .res 1            ; player Y speed in pixels per 256 frames (pixel/256frames)
 Frame:                .res 1            ; # of frames
 IsNMIComplete:        .res 1            ; indciate when vblank nmi is done drawing
 Clock60:              .res 1            ; # of elapsed seconds
