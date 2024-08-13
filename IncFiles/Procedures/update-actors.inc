@@ -13,7 +13,7 @@ ActorsLoop:
   ;   UpdatePlayer:
   ; :
   cmp #ActorType::SUBMARINE             ; is the actor a missile?
-  bne :+                              ; if no, skip; else, proceed
+  bne :++                             ; if no, skip; else, proceed
     UpdateSubmarine:
       lda ActorsArray+Actor::XVel,X   ; load submarine's XVel
       clc
@@ -23,11 +23,12 @@ ActorsLoop:
       bne :+                          ; has the submarine reached the left edge of the screen?
           lda #ActorType::NULL        ; if so, set actor type to NULL
           sta ActorsArray+Actor::Type,X
+      :
 
       jmp NextActor
   :
   cmp #ActorType::AIRPLANE              ; is the actor an airplane?
-  bne :+                                ; if no, skip; else, proceed
+  bne :++                               ; if no, skip; else, proceed
     UpdateAirplane:
       lda ActorsArray+Actor::XVel,X     ; load airplane's XVel
       clc
@@ -37,11 +38,12 @@ ActorsLoop:
       bne :+                            ; has the airplane reached the left edge of the screen?
           lda #ActorType::NULL          ; if so, set actor type to NULL
           sta ActorsArray+Actor::Type,X
+      :
 
       jmp NextActor
   :
   cmp #ActorType::MISSILE             ; is the actor a submarine?
-  bne :+                              ; if no, skip; else, proceed
+  bne :++                             ; if no, skip; else, proceed
     UpdateMissile:
       lda ActorsArray+Actor::YVel,X   ; load missile's YVel
       clc
@@ -51,6 +53,9 @@ ActorsLoop:
       bne :+                          ; has the missile reached the top of the screen?
           lda #ActorType::NULL        ; if so, set actor type to NULL
           sta ActorsArray+Actor::Type,X
+      :
+
+      ; jmp NextActor
   :
 
 NextActor:
