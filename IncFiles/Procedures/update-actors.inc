@@ -4,14 +4,14 @@
 ActorsLoop:
   lda ActorsArray+Actor::Type,X       ; load type of currently-referenced actor
 
-  cmp #ActorType::SPRITE0             ; is the actor sprite0?
-  bne :+                              ; if no, skip; else, proceed
-    UpdateSprite0:
-  :
-  cmp #ActorType::PLAYER              ; is the actor a player?
-  bne :+                              ; if no, skip; else, proceed
-    UpdatePlayer:
-  :
+  ; cmp #ActorType::SPRITE0             ; is the actor sprite0?
+  ; bne :+                              ; if no, skip; else, proceed
+  ;   UpdateSprite0:
+  ; :
+  ; cmp #ActorType::PLAYER              ; is the actor a player?
+  ; bne :+                              ; if no, skip; else, proceed
+  ;   UpdatePlayer:
+  ; :
   cmp #ActorType::SUBMARINE             ; is the actor a missile?
   bne :+                              ; if no, skip; else, proceed
     UpdateSubmarine:
