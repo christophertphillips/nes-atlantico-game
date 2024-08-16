@@ -12,23 +12,8 @@ ActorsLoop:
 
   cmp #ActorType::AIRPLANE
   bne :+
-      CheckAirplaneCollision:
-      lda ActorsArray+Actor::XPos,X
-      sta CheckActorCollisionBounds_X0
-
-      lda ActorsArray+Actor::YPos,X
-      sta CheckActorCollisionBounds_Y0
-
-      lda ActorsArray+Actor::XPos,X
-      clc
-      adc #24
-      sta CheckActorCollisionBounds_X1
-
-      lda ActorsArray+Actor::YPos,X
-      clc
-      adc #8
-      sta CheckActorCollisionBounds_Y1
-
+    CheckAirplaneCollision:
+      SET_CHECK_ACTOR_COLLISION_BOUNDS_ARGS #24, #8
       jsr CheckActorCollisionBounds
 
       lda Collision
