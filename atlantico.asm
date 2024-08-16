@@ -32,6 +32,7 @@ DestAddr:             .res 2            ; address of destination column in PPU m
 SourceAddr:           .res 2            ; address of source column/attribute in ROM
 OAMRAMIndex:          .res 1            ; index of OAM RAM data
 PrevOAMRAMIndex:      .res 1            ; index of previous OAM RAM data
+Collision:            .res 1            ; indicate when a collision has occurred between actors
 
 AddActor_Type:        .res 1            ; AddActor param (type of actor)
 AddActor_XPos:        .res 1            ; AddActor param (X position of actor)
@@ -44,6 +45,14 @@ DrawMetaSprite_YPos:      .res 1        ; DrawMetaSprite param (Y position of me
 DrawMetaSprite_TileNum:   .res 1        ; DrawMetaSprite param (starting tile number of metasprite)
 DrawMetaSprite_Attribs:   .res 1        ; DrawMetaSprite param (attributes of metasprite)
 DrawMetaSprite_TotalTiles:.res 1        ; DrawMetaSprite param (total # of tiles comprising metasprite)
+
+CheckActorCollision_XPos: .res 1        ; CheckActorCollision param (X position of source actor)
+CheckActorCollision_YPos: .res 1        ; CheckActorCollision param (Y position of source actor)
+
+CheckActorCollisionBounds_X0:  .res 1   ; CheckActorCollisionBounds param (X0 position of target actor)
+CheckActorCollisionBounds_Y0:  .res 1   ; CheckActorCollisionBounds param (Y0 position of target actor)
+CheckActorCollisionBounds_X1:  .res 1   ; CheckActorCollisionBounds param (X1 position of target actor)
+CheckActorCollisionBounds_Y1:  .res 1   ; CheckActorCollisionBounds param (Y1 position of target actor)
 
 ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; array of actors
 
