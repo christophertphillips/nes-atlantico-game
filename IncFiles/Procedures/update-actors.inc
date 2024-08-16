@@ -53,7 +53,26 @@ ActorsLoop:
       bne :+                          ; has the missile reached the top of the screen?
           lda #ActorType::NULL        ; if so, set actor type to NULL
           sta ActorsArray+Actor::Type,X
+          jmp NextActor               ; skip to next actor
       :
+
+      lda ActorsArray+Actor::XPos,X
+      clc
+      adc #3
+      sta CheckActorCollision_XPos
+
+      lda ActorsArray+Actor::YPos,X
+      clc
+      adc #1
+      sta CheckActorCollision_YPos
+
+      jsr CheckActorCollision
+
+      lda Collision
+      beq NextActor
+          lda #ActorType::NULL
+          sta ActorsArray+Actor::Type,X
+          ; jmp NextActor
 
       ; jmp NextActor
   :

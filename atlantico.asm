@@ -72,6 +72,8 @@ ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; array of actors
 .include "IncFiles/Procedures/update-actors.inc"
 .include "IncFiles/Procedures/spawn-actors.inc"
 .include "IncFiles/Procedures/get-random-byte.inc"
+.include "IncFiles/Procedures/check-actor-collision.inc"
+.include "IncFiles/Procedures/check-actor-collision-bounds.inc"
 
 Reset:
   INIT_NES
