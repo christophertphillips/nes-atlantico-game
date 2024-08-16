@@ -56,16 +56,7 @@ ActorsLoop:
           jmp NextActor               ; skip to next actor
       :
 
-      lda ActorsArray+Actor::XPos,X
-      clc
-      adc #3
-      sta CheckActorCollision_XPos
-
-      lda ActorsArray+Actor::YPos,X
-      clc
-      adc #1
-      sta CheckActorCollision_YPos
-
+      SET_CHECK_ACTOR_COLLISION_ARGS #3, #1 ; check for collision b/t missile and airplanes
       jsr CheckActorCollision
 
       lda Collision
