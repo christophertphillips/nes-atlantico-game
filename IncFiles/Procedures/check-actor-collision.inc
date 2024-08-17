@@ -1,26 +1,25 @@
 .proc CheckActorCollision
-  txa
+  txa                                   ; push X to stack
   pha
 
-  lda #0
+  lda #0                                ; reset collision indicator variable
   sta Collision
 
-  ldx #0
-
+  ldx #0                                ; index to reference actors
 ActorsLoop:
-  lda ActorsArray+Actor::Type,x
+  lda ActorsArray+Actor::Type,X         ; load type of currently-referenced actor
 
-  cmp #ActorType::AIRPLANE
-  bne :+
+  cmp #ActorType::AIRPLANE              ; is the actor an airplane?
+  bne :+                                ; if no, skip; else, proceed
     CheckAirplaneCollision:
-      SET_CHECK_ACTOR_COLLISION_BOUNDS_ARGS #24, #8
+      SET_CHECK_ACTOR_COLLISION_BOUNDS_ARGS #24, #8 ; check if source actor collided with the airplane
       jsr CheckActorCollisionBounds
 
-      lda Collision
-      beq NextActor
-          lda #ActorType::NULL
+      lda Collision                     ; did a collision occur?
+      beq NextActor                     ; if no, skip; else, proceed
+          lda #ActorType::NULL          ; set actor type to NULL
           sta ActorsArray+Actor::Type,X
-          jmp EndCollisionCheck
+          jmp EndCollisionCheck         ; break out of ActorsLoop (no need to continue checking collisions)
   :
 
 
