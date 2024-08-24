@@ -63,6 +63,9 @@ ActorsLoop:
       beq NextActor
           lda #ActorType::NULL
           sta ActorsArray+Actor::Type,X
+
+          jsr IncrementScore          ; increment Score RAM var
+          jsr RenderScore             ; copy updated score to nametable buffer
           ; jmp NextActor
 
       ; jmp NextActor

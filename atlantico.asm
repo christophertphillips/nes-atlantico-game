@@ -18,6 +18,7 @@
 ;--------------------------------------------------------
 
 .segment "ZEROPAGE"
+Score:                .res 4            ; game score (1s-10s-100s-1000s)
 Buttons:              .res 1            ; button state
 PrevButtons:          .res 1            ; previous button state
 Frame:                .res 1            ; # of frames
@@ -76,6 +77,9 @@ ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; array of actors
 .include "IncFiles/Procedures/get-random-byte.inc"
 .include "IncFiles/Procedures/check-actor-collision.inc"
 .include "IncFiles/Procedures/check-actor-collision-bounds.inc"
+.include "IncFiles/Procedures/increment-score.inc"
+.include "IncFiles/Procedures/render-score.inc"
+.include "IncFiles/Procedures/transfer-buffer.inc"
 
 Reset:
   INIT_NES
@@ -182,6 +186,9 @@ NewAttributeBlockCheck:
     LoadNewAttributeBlocks:
       jsr LoadAttributeBlocks           ; else, load a new set of attribute blocks
 :
+
+TransferNameTableBuffer:
+  jsr TransferBuffer                    ; transfer nametable buffer contents (e.g. score) to nametable
 
   ; draw status bar
 SetStatusScrollToZero:
