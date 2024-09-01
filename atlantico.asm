@@ -112,6 +112,9 @@ SetGameState:
   lda #GameState::GAME                  ; set game state to gameplay
   sta GameState
 
+DisableRendering:
+  SET_RENDERING #0, #0
+
 InitVariables:
   lda #0                                ; set frame, IsNMIComplete, clock counters to 0
   sta Buttons
