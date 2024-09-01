@@ -191,6 +191,11 @@ OAMStartDMACopy:
   lda #$02                              ; indicate that sprite data to be copied is at $02**
   sta PPU_OAM_DMA                       ; initiate DMA copy (indicating address above)
 
+CheckGameState:
+  lda GameState                         ; check if game state = game
+  cmp #GameState::GAME
+  bne SetGameClock                      ; if no, skip all scroll/nametable buffer logic
+
 NewColumnCheck:
   lda #$07                              ; has the screen scrolled by 8 pixels/units?
   bit XScroll
