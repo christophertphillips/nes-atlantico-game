@@ -61,6 +61,8 @@ CheckActorCollisionBounds_Y0:  .res 1   ; CheckActorCollisionBounds param (Y0 po
 CheckActorCollisionBounds_X1:  .res 1   ; CheckActorCollisionBounds param (X1 position of target actor)
 CheckActorCollisionBounds_Y1:  .res 1   ; CheckActorCollisionBounds param (Y1 position of target actor)
 
+SwitchCHRBank_Bank:            .res 1   ; SwitchCHRBank param
+
 ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; array of actors
 
 ;--------------------------------------------------------
