@@ -84,6 +84,7 @@ ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; array of actors
 .include "IncFiles/Procedures/increment-score.inc"
 .include "IncFiles/Procedures/render-score.inc"
 .include "IncFiles/Procedures/transfer-buffer.inc"
+.include "IncFiles/Procedures/load-title-screen.inc"
 
 Reset:
   INIT_NES
@@ -98,6 +99,24 @@ Title:
 SetGameState:
   lda #GameState::TITLE                 ; set game state to title screen
   sta GameState
+
+  jsr LoadPalette                       ; load title screen palette data
+  jsr LoadTitleScreen                   ; load title screen nametable
+
+EnableRendering:
+  SET_RENDERING #%10010000, #%00011110  ; enable NMI interrupts, set background pattern table address = $1000
+                                        ; show background, sprites, background/sprites in leftmost 8px
+
+TitleLoop:
+  jsr ReadControllers                   ; read controller inputs
+
+CheckStartButton:
+  CHECK_BUTTON #BUTTON_START            ; has the start button been pressed?
+  beq :+                                ; if no, skip
+      jmp Game                          ; else, jump to game
+  :
+
+POLL_IS_NMI_COMPLETE TitleLoop          ; wait for NMI to complete before resuming game loop
 
 .endscope
 
