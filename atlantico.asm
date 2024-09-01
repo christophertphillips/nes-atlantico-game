@@ -14,6 +14,7 @@
 .include "IncFiles/Enums/actor-type.inc"
 .include "IncFiles/Macros/set-rendering.inc"
 .include "IncFiles/Macros/poll-is-nmi-complete.inc"
+.include "IncFiles/Enums/game-state.inc"
 
 ;--------------------------------------------------------
 ; RAM
@@ -94,6 +95,10 @@ Reset:
 Title:
 .scope Title
 
+SetGameState:
+  lda #GameState::TITLE                 ; set game state to title screen
+  sta GameState
+
 .endscope
 
 ;--------------------------------------------------------
@@ -102,6 +107,10 @@ Title:
 
 Game:
 .scope Game
+
+SetGameState:
+  lda #GameState::GAME                  ; set game state to gameplay
+  sta GameState
 
 InitVariables:
   lda #0                                ; set frame, IsNMIComplete, clock counters to 0
