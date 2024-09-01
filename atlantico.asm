@@ -13,6 +13,7 @@
 .include "IncFiles/Structs/actor.inc"
 .include "IncFiles/Enums/actor-type.inc"
 .include "IncFiles/Macros/set-rendering.inc"
+.include "IncFiles/Macros/poll-is-nmi-complete.inc"
 
 ;--------------------------------------------------------
 ; RAM
@@ -147,13 +148,7 @@ CheckUpButton:
   jsr SpawnActors                       ; spawn new actors per conditions
   jsr RenderActors                      ; render all actors in ActorsArray
 
-PollIsNMIComplete:                      ; wait for IsNMIComplete to be set (=1)
-      lda IsNMIComplete
-      beq PollIsNMIComplete
-ResetIsNMIComplete:
-  lda #0                                ; reset IsNMIComplete flag
-  sta IsNMIComplete
-  jmp GameLoop                          ; return to top of GameLoop
+  POLL_IS_NMI_COMPLETE GameLoop         ; wait for NMI to complete before resuming game loop
 
 ;--------------------------------------------------------
 ; NMI interrupt handler
