@@ -311,7 +311,10 @@ AttributeData:
 TitleScreenNameTable:
 .incbin "titlescreen.nam"
 
-.segment "CHARS"
+.segment "CHARS_TITLE"
+.incbin "titlescreen.chr"
+
+.segment "CHARS_GAME"
 .incbin "atlantico.chr"
 
 ;--------------------------------------------------------
