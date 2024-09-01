@@ -5,7 +5,7 @@
 .byte $4E, $45, $53, $1A      ; 4 bytes with the characters 'N', 'E', 'S', "\n"
 .byte $02                     ; how many 16kb chunks for PRG-ROM (=32kb)
 .byte $01                     ; how many 8kb chunks for CHR-ROM (=8kb)
-.byte $01                     ; vertical mirroring (Mapper, mirroring, battery, trainer)
+.byte $31                     ; vertical mirroring, mapper 003 (Mapper, mirroring, battery, trainer)
 .byte $00                     ; nothing (Mapper, VS/Playchoice, NES 2.0)
 .byte $00                     ; nothing (PRG-RAM)
 .byte $00                     ; NTSC format
