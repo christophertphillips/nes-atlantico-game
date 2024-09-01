@@ -87,6 +87,22 @@ ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; array of actors
 Reset:
   INIT_NES
 
+;--------------------------------------------------------
+; title screen
+;--------------------------------------------------------
+
+Title:
+.scope Title
+
+.endscope
+
+;--------------------------------------------------------
+; gameplay
+;--------------------------------------------------------
+
+Game:
+.scope Game
+
 InitVariables:
   lda #0                                ; set frame, IsNMIComplete, clock counters to 0
   sta Buttons
@@ -150,6 +166,8 @@ CheckUpButton:
   jsr RenderActors                      ; render all actors in ActorsArray
 
   POLL_IS_NMI_COMPLETE GameLoop         ; wait for NMI to complete before resuming game loop
+
+.endscope
 
 ;--------------------------------------------------------
 ; NMI interrupt handler
