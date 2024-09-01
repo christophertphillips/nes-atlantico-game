@@ -12,6 +12,7 @@
 .include "IncFiles/Macros/set-check-actor-collision-bounds-args.inc"
 .include "IncFiles/Structs/actor.inc"
 .include "IncFiles/Enums/actor-type.inc"
+.include "IncFiles/Macros/set-rendering.inc"
 
 ;--------------------------------------------------------
 ; RAM
@@ -117,10 +118,12 @@ AddPlayer:
 
   LOAD_INIT_NAMETABLE
 
-EnableRendering:
+ResetPPUScroll:
   SET_PPU_SCROLL_ZERO #%10010000        ; initialize PPU_SCROLL's X,Y values to 0
-  lda #%00011110                        ; set PPU_MASK bits to show background
-  sta PPU_MASK
+
+EnableRendering:
+  SET_RENDERING #%10010000, #%00011110  ; enable NMI interrupts, set background pattern table address = $1000
+                                        ; show background, sprites, background/sprites in leftmost 8px
 
   ; game logic loop
 GameLoop:
