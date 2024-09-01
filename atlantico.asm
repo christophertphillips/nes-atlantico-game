@@ -15,6 +15,7 @@
 .include "IncFiles/Macros/set-rendering.inc"
 .include "IncFiles/Macros/poll-is-nmi-complete.inc"
 .include "IncFiles/Enums/game-state.inc"
+.include "IncFiles/Macros/set-switch-chr-bank-args.inc"
 
 ;--------------------------------------------------------
 ; RAM
@@ -87,6 +88,7 @@ ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; array of actors
 .include "IncFiles/Procedures/render-score.inc"
 .include "IncFiles/Procedures/transfer-buffer.inc"
 .include "IncFiles/Procedures/load-title-screen.inc"
+.include "IncFiles/Procedures/switch-chr-bank.inc"
 
 Reset:
   INIT_NES
@@ -97,6 +99,9 @@ Reset:
 
 Title:
 .scope Title
+
+  SET_SWITCH_CHR_BANK_ARGS #0           ; switch to CHR bank 0 (title screen CHR bank)
+  jsr SwitchCHRBank
 
 SetGameState:
   lda #GameState::TITLE                 ; set game state to title screen
@@ -128,6 +133,9 @@ POLL_IS_NMI_COMPLETE TitleLoop          ; wait for NMI to complete before resumi
 
 Game:
 .scope Game
+
+  SET_SWITCH_CHR_BANK_ARGS #1           ; switch to CHR bank 1 (gameplay CHR bank)
+  jsr SwitchCHRBank
 
 SetGameState:
   lda #GameState::GAME                  ; set game state to gameplay
