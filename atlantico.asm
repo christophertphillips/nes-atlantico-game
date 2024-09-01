@@ -252,6 +252,9 @@ BackgroundData:
 AttributeData:
 .include "IncFiles/Data/attributedata.inc"
 
+TitleScreenNameTable:
+.incbin "titlescreen.nam"
+
 .segment "CHARS"
 .incbin "atlantico.chr"
 
