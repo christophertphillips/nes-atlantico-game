@@ -119,8 +119,7 @@ EnableRendering:
                                         ; show background, sprites, background/sprites in leftmost 8px
 
 TitleLoop:
-  lda Buttons                           ; store previously-pressed buttons
-  sta PrevButtons
+  STORE_PREV_BUTTONS                    ; store previously-pressed buttons
 
   jsr ReadControllers                   ; read controller inputs
 
@@ -221,8 +220,7 @@ EnableRendering:
 
   ; game logic loop
 GameLoop:
-  lda Buttons                           ; store previously-pressed buttons
-  sta PrevButtons
+  STORE_PREV_BUTTONS                    ; store previously-pressed buttons
 
   jsr ReadControllers                   ; read controller inputs
 
