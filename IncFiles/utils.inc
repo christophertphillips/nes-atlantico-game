@@ -13,9 +13,9 @@
   sta PPU_DATA                ; send value to PPU_DATA ($2007)
 .endmacro
 
-.macro CHECK_BUTTON button_const
+.macro CHECK_BUTTON button_const, buttons_var
   lda button_const
-  bit Buttons
+  bit buttons_var
 .endmacro
 
 .macro LOOP_BACKGROUND_DATA
