@@ -64,13 +64,13 @@ ClearStaleOAMRAMDataLoop:
   bcs :+                                ; if no, skip
       lda #0                            ; else, zero out the stale data
 
-      sta $0200,Y                       ; (performed in 4-byte chunks, since each hardware sprite corresponds to 4 bytes of OAM RAM)
+      sta OAM_RAM_ADDR,Y                ; (performed in 4-byte chunks, since each hardware sprite corresponds to 4 bytes of OAM RAM)
       iny
-      sta $0200,Y
+      sta OAM_RAM_ADDR,Y
       iny
-      sta $0200,Y
+      sta OAM_RAM_ADDR,Y
       iny
-      sta $0200,Y
+      sta OAM_RAM_ADDR,Y
       iny
 
       jmp ClearStaleOAMRAMDataLoop
