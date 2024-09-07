@@ -118,7 +118,7 @@ TitleLoop:
   jsr ReadControllers                   ; read controller inputs
 
 CheckStartButton:
-  CHECK_BUTTON #BUTTON_START            ; has the start button been pressed?
+  CHECK_BUTTON #BUTTON_START, Buttons   ; has the start button been pressed?
   beq :+                                ; if no, skip
       jmp Game                          ; else, jump to game
   :
@@ -192,12 +192,10 @@ GameLoop:
   jsr ReadControllers                   ; read controller inputs
 
 CheckUpButton:
-  CHECK_BUTTON #BUTTON_A                ; has the A button been pressed?
+  CHECK_BUTTON #BUTTON_A, Buttons       ; has the A button been pressed?
   beq :+                                ; if no, skip
-      lda PrevButtons                   ; else, was the A button pressed previously?
-      and #BUTTON_A
-      cmp #BUTTON_A
-      beq :+                            ; if yes, skip
+      CHECK_BUTTON #BUTTON_A, PrevButtons ; else, was the A button pressed previously?
+      bne :+                            ; if yes, skip
           SET_ADD_ACTOR_ARGS #ActorType::MISSILE, #$70, #$A6, #$0, #$FF ; else, add Missile to actors
           jsr AddActor
   :
