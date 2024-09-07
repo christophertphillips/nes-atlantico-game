@@ -18,6 +18,11 @@
   bit buttons_var
 .endmacro
 
+.macro STORE_PREV_BUTTONS
+  lda Buttons
+  sta PrevButtons
+.endmacro
+
 .macro LOOP_BACKGROUND_DATA
   ldx #0                      ; init counters for hi/lo byte indexes
   ldy #0
