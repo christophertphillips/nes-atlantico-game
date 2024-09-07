@@ -104,6 +104,9 @@ Title:
   SET_SWITCH_CHR_BANK_ARGS #0           ; switch to CHR bank 0 (title screen CHR bank)
   jsr SwitchCHRBank
 
+  lda #0                                ; initialize title screen selection to 0
+  sta TitleScreenSelection
+
 SetGameState:
   lda #GameState::TITLE                 ; set game state to title screen
   sta GameState
@@ -116,12 +119,43 @@ EnableRendering:
                                         ; show background, sprites, background/sprites in leftmost 8px
 
 TitleLoop:
+  lda Buttons                           ; store previously-pressed buttons
+  sta PrevButtons
+
   jsr ReadControllers                   ; read controller inputs
 
 CheckStartButton:
   CHECK_BUTTON #BUTTON_START, Buttons   ; has the start button been pressed?
   beq :+                                ; if no, skip
       jmp Game                          ; else, jump to game
+  :
+
+CheckUpButton:
+  CHECK_BUTTON #BUTTON_UP, Buttons      ; has the up button been pressed?
+  beq :+                                ; if no, skip
+      CHECK_BUTTON #BUTTON_UP, PrevButtons ; else, was the up button pressed previously?
+      bne :+                            ; if yes, skip
+          dec TitleScreenSelection      ; else, decrement title screen selection
+
+          lda TitleScreenSelection      ; is the selection at -255?
+          cmp #$FF
+          bne :+                        ; if no, skip
+              lda #2                    ; else, wraparound to 2
+              sta TitleScreenSelection
+  :
+
+CheckDownButton:
+  CHECK_BUTTON #BUTTON_DOWN, Buttons    ; has the down button been pressed?
+  beq :+                                ; if no, skip
+      CHECK_BUTTON #BUTTON_DOWN, PrevButtons ; else, was the down button pressed previously?
+      bne :+                            ; if yes, skip
+          inc TitleScreenSelection      ; else, increment title screen selection
+
+          lda TitleScreenSelection      ; is the selection at 3?
+          cmp #$03
+          bne :+                        ; if no, skip
+              lda #0                    ; else, wraparound to 0
+              sta TitleScreenSelection
   :
 
 POLL_IS_NMI_COMPLETE TitleLoop          ; wait for NMI to complete before resuming game loop
