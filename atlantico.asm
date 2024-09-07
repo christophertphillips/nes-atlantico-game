@@ -41,6 +41,7 @@ OAMRAMIndex:          .res 1            ; index of OAM RAM data
 PrevOAMRAMIndex:      .res 1            ; index of previous OAM RAM data
 Collision:            .res 1            ; indicate when a collision has occurred between actors
 GameState:            .res 1            ; store the current state of the game
+TitleScreenSelection: .res 1            ; store the current title screen selection
 
 AddActor_Type:        .res 1            ; AddActor param (type of actor)
 AddActor_XPos:        .res 1            ; AddActor param (X position of actor)
