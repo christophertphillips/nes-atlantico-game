@@ -90,6 +90,7 @@ ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; array of actors
 .include "IncFiles/Procedures/transfer-buffer.inc"
 .include "IncFiles/Procedures/load-title-screen.inc"
 .include "IncFiles/Procedures/switch-chr-bank.inc"
+.include "IncFiles/Procedures/set-title-screen-cursor-position.inc"
 
 Reset:
   INIT_NES
@@ -113,6 +114,16 @@ SetGameState:
 
   jsr LoadPalette                       ; load title screen palette data
   jsr LoadTitleScreen                   ; load title screen nametable
+
+DrawTitleScreenCursor:
+  lda #$5E                              ; set y-position, sprite, attributes, and x-position of cursor
+  sta OAM_RAM_ADDR+0
+  lda #$23
+  sta OAM_RAM_ADDR+1
+  lda #$01
+  sta OAM_RAM_ADDR+2
+  lda #$5F
+  sta OAM_RAM_ADDR+3
 
 ResetPPUScroll:
   SET_PPU_SCROLL_ZERO #%10010000        ; initialize PPU_SCROLL's X,Y values to 0
