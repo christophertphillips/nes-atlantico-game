@@ -137,6 +137,8 @@ TitleLoop:
 
   jsr ReadControllers                   ; read controller inputs
 
+  jsr SetTitleScreenCursorPosition      ; set cursor position
+
 CheckStartButton:
   CHECK_BUTTON #BUTTON_START, Buttons   ; has the start button been pressed?
   beq :+                                ; if no, skip
