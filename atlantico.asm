@@ -114,6 +114,9 @@ SetGameState:
   jsr LoadPalette                       ; load title screen palette data
   jsr LoadTitleScreen                   ; load title screen nametable
 
+ResetPPUScroll:
+  SET_PPU_SCROLL_ZERO #%10010000        ; initialize PPU_SCROLL's X,Y values to 0
+
 EnableRendering:
   SET_RENDERING #%10010000, #%00011110  ; enable NMI interrupts, set background pattern table address = $1000
                                         ; show background, sprites, background/sprites in leftmost 8px
