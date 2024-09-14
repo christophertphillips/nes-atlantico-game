@@ -17,6 +17,7 @@
 .include "IncFiles/Enums/game-state.inc"
 .include "IncFiles/Macros/set-switch-chr-bank-args.inc"
 .include "IncFiles/Enums/title-screen-selection.inc"
+.include "IncFiles/Macros/set-load-palette-args.inc"
 
 ;--------------------------------------------------------
 ; RAM
@@ -116,9 +117,7 @@ SetGameState:
   lda #GameState::TITLE                 ; set game state to title screen
   sta GameState
 
-  lda #TitleScreenSelection::OVERCAST
-  sta LoadPalette_Index
-
+  SET_LOAD_PALETTE_ARGS #TitleScreenSelection::OVERCAST
   jsr LoadPalette                       ; load title screen palette data
   jsr LoadTitleScreen                   ; load title screen nametable
 
@@ -222,9 +221,7 @@ InitVariables:
   sta Seed+1
 
 Main:
-  lda TitleScreenSelection
-  sta LoadPalette_Index
-
+  SET_LOAD_PALETTE_ARGS TitleScreenSelection
   jsr LoadPalette                       ; set palette data
 
 AddSprite0:
