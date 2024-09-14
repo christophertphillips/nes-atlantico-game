@@ -33,6 +33,7 @@ PrevSubmarineClock:   .res 1            ; seconds when previous submarine spawne
 PrevAirplaneClock:    .res 1            ; seconds when previous airplane spawned
 Seed:                 .res 2            ; seed for generating random bytes
 BgPtr:                .res 2            ; pointer to the background address
+PalettePtr:           .res 2            ; pointer to the pallette to be loaded
 XScroll:              .res 1            ; horizontal scroll position
 CurrNameTable:        .res 1            ; store the current 'starting' NameTable (0 or 1)
 SourceColIndex:       .res 1            ; index of source column
@@ -63,6 +64,8 @@ CheckActorCollisionBounds_X0:  .res 1   ; CheckActorCollisionBounds param (X0 po
 CheckActorCollisionBounds_Y0:  .res 1   ; CheckActorCollisionBounds param (Y0 position of target actor)
 CheckActorCollisionBounds_X1:  .res 1   ; CheckActorCollisionBounds param (X1 position of target actor)
 CheckActorCollisionBounds_Y1:  .res 1   ; CheckActorCollisionBounds param (Y1 position of target actor)
+
+LoadPalette_Index:             .res 1   ; LoadPalette param (index of palette to load)
 
 SwitchCHRBank_Bank:            .res 1   ; SwitchCHRBank param
 
