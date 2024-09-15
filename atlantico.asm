@@ -96,6 +96,7 @@ ActorsArray:          .res MAX_ACTORS * .sizeof(Actor) ; array of actors
 .include "IncFiles/Procedures/load-title-screen.inc"
 .include "IncFiles/Procedures/switch-chr-bank.inc"
 .include "IncFiles/Procedures/set-title-screen-cursor-position.inc"
+.include "IncFiles/Procedures/load-title-screen-rle.inc"
 
 Reset:
   INIT_NES
@@ -119,7 +120,7 @@ SetGameState:
 
   SET_LOAD_PALETTE_ARGS #TitleScreenSelection::OVERCAST
   jsr LoadPalette                       ; load title screen palette data
-  jsr LoadTitleScreen                   ; load title screen nametable
+  jsr LoadTitleScreenRLE                ; load title screen nametable
 
 DrawTitleScreenCursor:
   lda #$5E                              ; set y-position, sprite, attributes, and x-position of cursor
@@ -379,7 +380,7 @@ AttributeData:
 .include "IncFiles/Data/attributedata.inc"
 
 TitleScreenNameTable:
-.incbin "titlescreen.nam"
+.incbin "titlescreen.rle"
 
 .segment "CHARS_TITLE"
 .incbin "titlescreen.chr"
