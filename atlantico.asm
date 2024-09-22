@@ -401,6 +401,13 @@ AttributeData:
 TitleScreenNameTable:
 .incbin "titlescreen.rle"
 
+MusicData:
+.include "IncFiles/Sound/Music/maritime.asm"
+.include "IncFiles/Sound/Music/titan.asm"
+
+SFXData:
+.include "IncFiles/Sound/SFX/sounds.asm"
+
 .segment "CHARS_TITLE"
 .incbin "titlescreen.chr"
 
