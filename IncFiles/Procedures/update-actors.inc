@@ -68,6 +68,10 @@ ActorsLoop:
           jsr RenderScore             ; copy updated score to nametable buffer
           ; jmp NextActor
 
+          lda #1                      ; play explosion sound effect
+          ldx #FAMISTUDIO_SFX_CH1
+          jsr famistudio_sfx_play
+
       ; jmp NextActor
   :
 

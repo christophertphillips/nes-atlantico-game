@@ -262,6 +262,12 @@ PlayGameMusic:
   lda #0                                ; play 'maritime' song via FamiStudio sound engine
   jsr famistudio_music_play
 
+InitializeSFX:
+  ldx #<sounds                          ; load address of sound effects
+  ldy #>sounds
+
+  jsr famistudio_sfx_init               ; initialize FamiStudio sfx
+
 Main:
   SET_LOAD_PALETTE_ARGS TitleScreenSelection
   jsr LoadPalette                       ; set palette data
@@ -296,6 +302,10 @@ CheckUpButton:
       bne :+                            ; if yes, skip
           SET_ADD_ACTOR_ARGS #ActorType::MISSILE, #$70, #$A6, #$0, #$FF ; else, add Missile to actors
           jsr AddActor
+
+          lda #0                        ; play missile sound effect
+          ldx #FAMISTUDIO_SFX_CH0
+          jsr famistudio_sfx_play
   :
 
   jsr UpdateActors                      ; update all actors in ActorsArray
