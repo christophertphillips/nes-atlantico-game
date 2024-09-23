@@ -133,6 +133,16 @@ Title:
   lda #TitleScreenSelection::CLEARDAY   ; initialize title screen selection to 'clearday'
   sta TitleScreenSelection
 
+PlayTitleMusic:
+  ldx #<music_data_titan                ; load address of 'titan' song
+  ldy #>music_data_titan
+
+  lda #1                                ; initialize FamiStudio sound engine with NTSC
+  jsr famistudio_init
+
+  lda #0                                ; play 'titan' song via FamiStudio sound engine
+  jsr famistudio_music_play
+
 SetGameState:
   lda #GameState::TITLE                 ; set game state to title screen
   sta GameState
@@ -239,6 +249,18 @@ InitVariables:
   sta Seed+0
   lda #$34
   sta Seed+1
+
+PlayGameMusic:
+  jsr famistudio_music_stop
+
+  ldx #<music_data_maritime             ; load address of 'maritime' song
+  ldy #>music_data_maritime
+
+  lda #1                                ; initialize FamiStudio sound engine with NTSC
+  jsr famistudio_init
+
+  lda #0                                ; play 'maritime' song via FamiStudio sound engine
+  jsr famistudio_music_play
 
 Main:
   SET_LOAD_PALETTE_ARGS TitleScreenSelection
@@ -364,6 +386,9 @@ SkipClock60Increment:
 SetNMIComplete:
   lda #1                                ; set IsNMIComplete flag
   sta IsNMIComplete
+
+UpdateFamiStudio:
+  jsr famistudio_update                 ; update FamiStudio sound engine every frame
 
   STACK_PULL_ALL                        ; pull A,X,Y registers from stack
 
