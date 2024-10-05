@@ -4,4 +4,5 @@
   YPos  .byte
   XVel  .byte
   YVel  .byte
+  Screen .byte
 .endstruct

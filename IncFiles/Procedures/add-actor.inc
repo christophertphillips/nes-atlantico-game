@@ -32,6 +32,9 @@ AddActorToActorArray:
   lda AddActor_YVel                     ; store actor YVel in ActorsArray entry
   sta ActorsArray+Actor::YVel,X
 
+  lda #0                                ; store actor Screen in ActorsArray entry
+  sta ActorsArray+Actor::Screen,X       ; (assume all actors start on screen 0)
+
 EndRoutine:
   rts
 .endproc
