@@ -57,6 +57,7 @@ DrawMetaSprite_YPos:      .res 1        ; DrawMetaSprite param (Y position of me
 DrawMetaSprite_TileNum:   .res 1        ; DrawMetaSprite param (starting tile number of metasprite)
 DrawMetaSprite_Attribs:   .res 1        ; DrawMetaSprite param (attributes of metasprite)
 DrawMetaSprite_TotalTiles:.res 1        ; DrawMetaSprite param (total # of tiles comprising metasprite)
+DrawMetaSprite_Screen:    .res 1        ; DrawMetaSprite param (screen of actor's first metasprite)
 
 CheckActorCollision_XPos: .res 1        ; CheckActorCollision param (X position of source actor)
 CheckActorCollision_YPos: .res 1        ; CheckActorCollision param (Y position of source actor)
