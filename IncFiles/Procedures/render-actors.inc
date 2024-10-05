@@ -9,7 +9,7 @@ ActorsLoop:
     cmp #ActorType::SPRITE0             ; is the actor sprite0?
     bne :+                              ; if no, skip; else, proceed
       RenderSprite0:
-        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$50, #$20, #1
+        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$50, #$20, #1, {ActorsArray+Actor::Screen,X}
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
         jmp NextActor                   ; go to next actor
@@ -17,7 +17,7 @@ ActorsLoop:
     cmp #ActorType::PLAYER              ; is the actor a player?
     bne :+                              ; if no, skip; else, proceed
       RenderPlayer:
-        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$60, #$00, #4
+        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$60, #$00, #4, {ActorsArray+Actor::Screen,X}
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
         jmp NextActor                   ; go to next actor
@@ -25,7 +25,7 @@ ActorsLoop:
   cmp #ActorType::SUBMARINE             ; is the actor a missile?
     bne :+                              ; if no, skip; else, proceed
       RenderSubmarine:
-        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$00, #$00, #4
+        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$00, #$00, #4, {ActorsArray+Actor::Screen,X}
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
         jmp NextActor                   ; go to next actor
@@ -33,7 +33,7 @@ ActorsLoop:
   cmp #ActorType::AIRPLANE               ; is the actor an airplane?
     bne :+                              ; if no, skip; else, proceed
       RenderAirplane:
-        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$10, #$03, #3
+        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$10, #$03, #3, {ActorsArray+Actor::Screen,X}
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
         jmp NextActor                   ; go to next actor
@@ -41,7 +41,7 @@ ActorsLoop:
   cmp #ActorType::MISSILE               ; is the actor a submarine?
     bne :+                              ; if no, skip; else, proceed
       RenderMissile:
-        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$50, #$00, #1
+        SET_DRAW_META_SPRITE_ARGS {ActorsArray+Actor::XPos,X}, {ActorsArray+Actor::YPos,X}, #$50, #$00, #1, {ActorsArray+Actor::Screen,X}
 
         jsr DrawMetaSprite              ; call DrawMetaSprite using previously-assigned args
         jmp NextActor                   ; go to next actor
