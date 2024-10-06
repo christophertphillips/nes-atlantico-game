@@ -5,7 +5,7 @@
   cmp #3                                ; have more than 3 seconds passed since the last submarine was spawned?
   bne :++                                ; if no, skip
     SpawnSubmarine:                     ; else, spawn a submarine
-      SET_ADD_ACTOR_ARGS #ActorType::SUBMARINE, #223, #185, #$FF, #$0
+      SET_ADD_ACTOR_ARGS #ActorType::SUBMARINE, #$FF, #$B9, #$FF, #$0
 
       jsr GetRandomByte                 ; get a random byte
 

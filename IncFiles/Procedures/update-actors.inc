@@ -13,18 +13,26 @@ ActorsLoop:
   ;   UpdatePlayer:
   ; :
   cmp #ActorType::SUBMARINE             ; is the actor a missile?
-  bne :++                             ; if no, skip; else, proceed
+  bne :+                              ; if no, skip; else, proceed
     UpdateSubmarine:
       lda ActorsArray+Actor::XVel,X   ; load submarine's XVel
       clc
       adc ActorsArray+Actor::XPos,X   ; add it to submarien's XPos
       sta ActorsArray+Actor::XPos,X   ; store new submarine XPos
 
-      bne :+                          ; has the submarine reached the left edge of the screen?
-          lda #ActorType::NULL        ; if so, set actor type to NULL
-          sta ActorsArray+Actor::Type,X
-      :
+      lda ActorsArray+Actor::Screen,X   ; set the carry for the first metasprite tile of the actor using the carry from the prior addition
+      sbc #0                            ; subtract 0, since the carry is the only quantity of interest
+      sta ActorsArray+Actor::Screen,X
 
+      cmp #$FF                          ; is the submarine on screen -1?
+      bne EmdSubmarineUpdate            ; if no, skip
+          lda ActorsArray+Actor::XPos,X ; else, is the submarine less than 224 ($E0) on screen -1?
+          cmp #$E0
+          bcs EmdSubmarineUpdate        ; if no, skip
+              lda #ActorType::NULL      ; else, set actor type to NULL
+              sta ActorsArray+Actor::Type,X
+
+    EmdSubmarineUpdate:
       jmp NextActor
   :
   cmp #ActorType::AIRPLANE              ; is the actor an airplane?
