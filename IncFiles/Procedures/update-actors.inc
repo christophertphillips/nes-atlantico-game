@@ -84,9 +84,11 @@ ActorsLoop:
           jsr RenderScore             ; copy updated score to nametable buffer
           ; jmp NextActor
 
+          STACK_PUSH X                ; push UpdateActors loop index value to stack
           lda #1                      ; play explosion sound effect
           ldx #FAMISTUDIO_SFX_CH1
           jsr famistudio_sfx_play
+          STACK_PULL X                ; pull UpdateActors loop index value from stack
 
       ; jmp NextActor
   :

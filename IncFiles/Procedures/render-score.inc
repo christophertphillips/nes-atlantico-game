@@ -1,4 +1,6 @@
 .proc RenderScore
+  STACK_PUSH X                          ; push UpdateActors loop index value to stack
+
   ldx #0                                ; index of buffer byte to store
 
 StoreScoreBufferLength:
@@ -33,6 +35,8 @@ StoreScoreBufferDigits:
   adc #$60                              ; add offset for digits in pattern table
   sta BUFFER_ADDR,X
   ; inx
+
+  STACK_PULL X                          ; pull UpdateActors loop index value from stack
 
   rts
 .endproc
