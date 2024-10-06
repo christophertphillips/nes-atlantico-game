@@ -31,7 +31,7 @@
   cmp #2                                ; have more than 3 seconds passed since the last airplane was spawned?
   bne :++                               ; if no, skip
     SpawnAirplane:                      ; else, spawn a airplane
-      SET_ADD_ACTOR_ARGS #ActorType::AIRPLANE, #232, #$30, #$FE, #$0
+      SET_ADD_ACTOR_ARGS #ActorType::AIRPLANE, #$FF, #$30, #$FE, #$0
 
       jsr GetRandomByte                 ; get a random byte
 
